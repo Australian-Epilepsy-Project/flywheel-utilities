@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=60", "wheel"]
+
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flwyheel-utilities"
+version = "0.1.0"
+description = "Package to make interfacing with Flywheel.io simpler. Especially geared towards subject-based analyses"
+readme = "README.md"
+authors = [{ name = "Aaron Capon", email = "aaron.capon@florey.edu.au" }]
+license = { file = "COPYING" }
+keywords = ["flywheel"]
+classifiers = ["Programming Language :: Python :: 3",
+               "Operating System :: OS Independent"]
+
+requires-python = ">3.6"
+
+[project.urls]
+Homepage = "https://github.com/Australian-Epilepsy-Project/flywheel-utilities"
+
+
