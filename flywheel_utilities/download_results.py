@@ -19,7 +19,10 @@ log = logging.getLogger(__name__)
 
 def unzip_result(zip_name, work_dir, is_dry_run):
     '''
-    Unzip the downloaded results. Only unzips the file if not already present.
+    Unzip the downloaded results. Attempts to find the zipped folder name first,
+    however if there are not nested folders, the unzip name is determined by
+    stripping the zipped names of everything after and inlcuding "_sub-".
+    Only unzips the file if not already present.
 
     Args:
         zip_name (pathlib.Path): full path to zip file
@@ -27,17 +30,22 @@ def unzip_result(zip_name, work_dir, is_dry_run):
         is_dry_run (bool): is this a dry run?
     '''
 
-    # Get list of all directories in the zip file
+    # Get list of all files in the zip file
     with ZipFile(zip_name, 'r') as in_zip:
         dirs = [info.filename for info in in_zip.infolist() if info.is_dir()]
+        files = [info.filename for info in in_zip.infolist() if not str(info).endswith("/")]
 
-    if len(dirs) == 0:
+    if len(dirs) == 0 and len(files) == 0:
         log.error("Zip file is empty!")
         return 1
 
     # Extract the base directory
-    base_dir = Path(dirs[0]).parts[0]
-    log.debug(f"Base dir of zipped file: {base_dir}")
+    if len(dirs) != 0:
+        base_dir = Path(dirs[0]).parts[0]
+        log.debug(f"Base dir of zipped file: {base_dir}")
+    else:
+        name = str(zip_name)
+        base_dir = Path(name[:name.find("_sub-")]).parts[-1]
 
     # Check if file already exists
     if not (work_dir / base_dir).exists():
