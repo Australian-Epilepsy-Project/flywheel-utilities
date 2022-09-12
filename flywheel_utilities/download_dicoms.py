@@ -132,9 +132,10 @@ def download_all_dicoms(subject,
 
     Args:
         subject (flywheel.models.Subject): flywheel subject object
-        work_dir (pathlib.Path): path to working directory
+        work_dir (pathlib.Path): path to working directory for download
         to_ignore (list(str)): list of strings used to reject DICOMS for
         download
+        dicom_dir (pathlib.Path): directory to extract DICOM series to
         is_dry_run (bool): download results?
     '''
 
