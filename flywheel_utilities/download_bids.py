@@ -13,7 +13,8 @@ log = logging.getLogger(__name__)
 
 def is_bidsified(scan, acq):
     '''
-    Check if scan has been properly BIDSified.
+    Check if scan has been properly BIDSified, or if "ignore" field has been
+    checked.
 
     Args:
         scan (flywheel.models.file_entry.FileEntry): single scan from
@@ -21,14 +22,10 @@ def is_bidsified(scan, acq):
         acq (flywheel.models.acquisition.Acquisition): Flywheel acquisition
         container
     Returns:
-        (bool): BIDSified?
+        (bool): download file?
     '''
 
-    try:
-        _is_bids = scan['info']['BIDS']
-    except (KeyError, TypeError):
-        return False
-
+    # Check for BIDS information
     try:
         folder_name = scan['info']['BIDS']['Folder']
     except (KeyError, TypeError):
@@ -46,6 +43,11 @@ def is_bidsified(scan, acq):
 
     # Filter out sourcedata (dicoms)
     if folder_name == 'sourcedata':
+        return False
+
+    # Check for ignore field
+    if scan['info']['BIDS']['ignore'] is True:
+        log.debug(f"Ignore field True: {acq.label}")
         return False
 
     return True
