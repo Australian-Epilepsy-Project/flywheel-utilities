@@ -46,8 +46,12 @@ def is_bidsified(scan, acq):
         return False
 
     # Check for ignore field
-    if scan['info']['BIDS']['ignore'] is True:
-        log.debug(f"Ignore field True: {acq.label}")
+    try:
+        if scan['info']['BIDS']['ignore'] is True:
+            log.debug(f"Ignore field True: {acq.label}")
+            return False
+    except (KeyError, TypeError):
+        log.debug(f"No ignore field: {acq.label}")
         return False
 
     return True
