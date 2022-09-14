@@ -9,6 +9,7 @@ from tests.mock_classes import Context
 
 logger = logging.getLogger()
 
+
 def test_setup_basic_logging():
     ''' Test setup_basic_logging '''
 

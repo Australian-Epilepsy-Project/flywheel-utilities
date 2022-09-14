@@ -10,7 +10,6 @@ from tests.mock_classes import Context
 def test_get_gear_name():
     ''' Test get_gear_name '''
 
-
     gear_name = 'testing-gear'
     gear_version = '3.14.2_0.11.0'
 
