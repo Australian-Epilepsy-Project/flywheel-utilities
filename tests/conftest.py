@@ -2,8 +2,8 @@
 
 # pylint: disable=import-error
 import pytest
-from flywheel.models.acquisition import Acquisition
 from flywheel.models.file_entry import FileEntry
+from flywheel.models.acquisition import Acquisition
 
 
 @pytest.fixture

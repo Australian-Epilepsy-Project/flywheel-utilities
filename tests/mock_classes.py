@@ -5,7 +5,7 @@ Very basic mock context class
 from pathlib import Path
 
 
-# pylint:i disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
 # Mock context manager
 class Context():
     ''' Dummy class docstring '''
