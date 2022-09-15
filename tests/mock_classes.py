@@ -20,3 +20,23 @@ class Context():
 
         self.manifest = {"label": gear_name,
                          "version": gear_version}
+
+class mock_scan():
+    ''' Dummy scan docstring '''
+    def __init__(self,
+                 filename,
+                 folder,
+                 path,
+                 ignore,
+                 valid,
+                 file_type):
+        self.info = {"BIDS": {"Filename": filename,
+                              "Folder": folder,
+                              "Path": path,
+                              "ignore": ignore,
+                              "valid": valid}}
+        self.type = file_type
+
+    def download(self, dl_path):
+        ''' dummy download '''
+        pass
