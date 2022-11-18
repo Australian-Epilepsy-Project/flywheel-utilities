@@ -63,6 +63,10 @@ To change this behaviour, the arg `which_version` can be set to:
 - "single": use this when the gear has only X.X.X as its version
 - "none": use this to omit any versions from the directory name
 
+Note: the IntendedFor fields in the json sidecars are not populated during the BIDS Curation step on Flywheel. Instead,
+this information is stored in the metadata of the json file. So, when downloading fmaps, this IntendedFor information is
+obtained and written into the downloaded json file.
+
 ### Downloading results from analysis containers
 
 Search for successful gear runs from a particular gear and download the output based on the output file name. This example ignores gears if they were run at the export level. That is, produced a DICOM series rather than NIfTI files.
