@@ -5,27 +5,28 @@ Determine and set computing resources.
 import logging
 import os
 from math import floor
-import psutil
+from typing import Tuple, Optional, Union
+import psutil # type: ignore
 
 log = logging.getLogger(__name__)
 
 # pylint: disable=logging-fstring-interpolation
 
 
-def determine_n_cpus(n_cpus, omp_threads):
+def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
     '''
-    Provide the desired number of cpus and threads, and have maximum number
-    allowed returned.
+    Provide the desired number of cpus and threads, and have maximum number allowed returned.
 
     Args:
-        n_cpus (int): number of threads across all processes
-        omp_threads (int): number of threads per process
+        n_cpus: number of threads across all processes
+        omp_threads: number of threads per process
     Returns:
-        n_cpus (int): number of threads across all processes
-        omp_threads (int): number of threads per process
+        n_cpus: number of threads across all processes
+        omp_threads: number of threads per process
     '''
 
-    avail_cpus = os.cpu_count()
+    avail_cpus: Optional[int] = os.cpu_count()
+    assert avail_cpus is not None, "Could not determine available CPUs"
 
     log.info(f"Available CPUs: {avail_cpus}")
 
@@ -55,15 +56,14 @@ def determine_n_cpus(n_cpus, omp_threads):
     return n_cpus, omp_threads
 
 
-def determine_max_mem(mem_mb):
+def determine_max_mem(mem_mb: Union[int, float]) -> float:
     '''
-    Provide the desired amount of memory and have the maximum allowed memory
-    usage returned.
+    Provide the desired amount of memory and have the maximum allowed memory usage returned.
 
     Args:
-        mem_mb (float): requested memory allocation in GiB
+        mem_mb: requested memory allocation in GiB
     Returns:
-        mem_mb (float): allocated memory (in GiB)
+        mem_mb: allocated memory (in GiB)
     '''
 
     mem_total = psutil.virtual_memory().total / (1024**3)

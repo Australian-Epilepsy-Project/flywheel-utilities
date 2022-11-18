@@ -8,8 +8,15 @@ from pathlib import Path
 from functools import reduce
 from zipfile import ZipFile
 # pylint: disable=import-error
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
-# pylint: enable=import-error
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive # type: ignore
+
+# pylint: disable=wrong-import-order
+from typing import Dict, List, TYPE_CHECKING
+# Enable explicit type hints with mypy
+if TYPE_CHECKING:
+    from flywheel.models.file_entry import FileEntry # type: ignore
+    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
+    from flywheel.models.container_analysis_output import ContainerAnalysisOutput # type: ignore
 
 log = logging.getLogger(__name__)
 
@@ -17,17 +24,16 @@ log = logging.getLogger(__name__)
 # pylint: disable=too-many-locals
 
 
-def unzip_result(zip_name, work_dir, is_dry_run):
+def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
     '''
-    Unzip the downloaded results. Attempts to find the zipped folder name first,
-    however if there are not nested folders, the unzip name is determined by
-    stripping the zipped names of everything after and inlcuding "_sub-".
+    Unzip the downloaded results. Attempts to find the zipped folder name first, however if there are not nested
+    folders, the unzip name is determined by stripping the zipped names of everything after and inlcuding "_sub-".
     Only unzips the file if not already present.
 
     Args:
-        zip_name (pathlib.Path): full path to zip file
-        work_dir (pathlib.Path): path to work directory
-        is_dry_run (bool): is this a dry run?
+        zip_name: full path to zip file
+        work_dir: path to work directory
+        is_dry_run: is this a dry run?
     '''
 
     # Get list of all files in the zip file
@@ -56,25 +62,24 @@ def unzip_result(zip_name, work_dir, is_dry_run):
     return 0
 
 
-def download_previous_result(subject,
-                             results,
-                             work_dir,
-                             export_gear=False,
-                             is_dry_run=False):
+def download_previous_result(subject: 'ContainerSubjectOutput',
+                             results: Dict[str, str],
+                             work_dir: Path,
+                             export_gear: bool = False,
+                             is_dry_run: bool = False) -> int:
     '''
-    Download a result from a specific gear, with the option to filter via the
-    job tags. One can specify if searching for processing results or export
-    results via export_gear. Results will be downloaded to 'work_dir'.
+    Download a result from a specific gear, with the option to filter via the job tags. One can specify if searching for
+    processing results or export results via export_gear. Results will be downloaded to 'work_dir'.
 
     Args:
-        subject (flywheel.models.Subject): flywheel subject object
-        results_info (dict): dict containing gear_name, filename and tag.
+        subject: flywheel subject object
+        results_info: dict containing gear_name, filename and tag.
                     - gear_name: with or without version
                     - filename: used as regex to match output file
                     - tag: used for simple is <tag> in tag search of job tags.
-        work_dir (pathlib.Path): path to work directory
-        export_gear (bool): should export runs be included?
-        is_dry_run (bool): is this a dry run?
+        work_dir: path to work directory
+        export_gear: should export runs be included?
+        is_dry_run: is this a dry run?
     '''
 
     gear_name = results['gear_name']
@@ -86,7 +91,7 @@ def download_previous_result(subject,
     analyses = subject.reload().analyses
 
     # Scan through subject's previous analyses and find all successful runs
-    def filter_completed(analysis):
+    def filter_completed(analysis: 'ContainerAnalysisOutput') -> bool:
         if 'gear-export' in analysis.job.config['config']:
             if analysis.job.config['config']['gear-export'] != export_gear:
                 return False
@@ -103,8 +108,8 @@ def download_previous_result(subject,
     log.debug(f"Found {len(analyses)} successful gear runs")
 
     # Filter using tag
-    def filter_tag(analyses, tag):
-        return bool(tag in analyses.job.tags)
+    def filter_tag(analysis: 'ContainerAnalysisOutput', tag: str) -> bool:
+        return bool(tag in analysis.job.tags)
 
     if tag != "":
         log.debug(f"Using the tag '{tag}' to further filter results")
@@ -122,7 +127,8 @@ def download_previous_result(subject,
         log.debug(f" finished: {i.created}")
 
     # Select latest output
-    def latest_date(output1, output2):
+    def latest_date(output1: 'ContainerAnalysisOutput',
+                    output2: 'ContainerAnalysisOutput') -> 'ContainerAnalysisOutput':
         return output1 if output1.created > output2.created else output2
 
     latest_result = reduce(latest_date, analyses)
@@ -156,22 +162,24 @@ def download_previous_result(subject,
     return 0
 
 
-def download_specific_result(analysis, filename, work_dir, is_dry_run):
+def download_specific_result(analysis: 'ContainerAnalysisOutput',
+                             filename: str,
+                             work_dir: Path,
+                             is_dry_run: bool) -> None:
     '''
-    Download results using destination ID from previous gear run. Results will
-    be downloaded into work_dir.
+    Download results using destination ID from previous gear run. Results will be downloaded into work_dir.
 
     Args:
-        analysis (flywheel.models.analysis_output.AnalysisOutput)
-        filename (str): string used to find output file (substring matching)
-        work_dir (pathlib.Path): path to work directory
-        is_dry_run (bool): is this a dry run?
+        analysis:
+        filename: string used to find output file (substring matching)
+        work_dir: path to work directory
+        is_dry_run: is this a dry run?
     '''
 
     log.info("Scanning analysis output files for an output "
              f"containing '{filename}'")
 
-    files = analysis.files
+    files: List['FileEntry'] = analysis.files
 
     if len(files) == 0:
         log.error("Analysis has no output files")

@@ -2,12 +2,19 @@
 Module for downloading data from flywheel
 '''
 
+# pylint: disable=import-error
+# pylint: disable=wrong-import-order
+# pylint: disable=wrong-import-position
 import logging
 import re
 from pathlib import Path
-# pylint: disable=import-error
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
-# pylint: enable=import-error
+
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive # type: ignore
+
+from typing import List, TYPE_CHECKING
+# Enable explicit type hints with mypy
+if TYPE_CHECKING:
+    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
 
 from flywheel_utilities import download_bids
 
@@ -16,15 +23,14 @@ log = logging.getLogger(__name__)
 # pylint: disable=logging-fstring-interpolation
 
 
-def dicom_unzip_name(name):
+def dicom_unzip_name(name: str) -> str:
     '''
-    Construct name for unzipped DICOM series from label on Flywheel.
-    Remove spaces and .zip.
+    Construct name for unzipped DICOM series from label on Flywheel. Remove spaces and .zip.
 
     Args:
-        name (str): filename
+        name: filename
     Returns:
-        clean_name (str): filename
+        clean_name: filename
     '''
 
     clean_name = name.replace(".dicom", "")
@@ -34,21 +40,21 @@ def dicom_unzip_name(name):
 
 
 # pylint: disable=too-many-branches
-def download_specific_dicoms(subject,
-                             filenames,
-                             work_dir,
-                             is_dry_run=False):
+def download_specific_dicoms(subject: 'ContainerSubjectOutput',
+                             filenames: List[str],
+                             work_dir: Path,
+                             is_dry_run: bool = False) -> List[Path]:
     '''
-    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI
-    files to find the container containing the correct DICOM series.
+    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the container containing
+    the correct DICOM series.
 
     Args:
-        subject (flywheel.models.Subject): flywheel subject object
-        filenames (list(str)): list of BIDsified file names
-        work_dir (pathlib.Path): path to working directory
-        is_dry_run (bool): download results?
+        subject: flywheel subject object
+        filenames: list of BIDsified file names
+        work_dir: path to working directory
+        is_dry_run: download results?
     Returns:
-        orig_dicoms (str): path to unzipped DICOMs
+        orig_dicoms: path to unzipped DICOMs
     '''
 
     log.info("--------------------------------------------")
@@ -58,7 +64,7 @@ def download_specific_dicoms(subject,
     num_files = len(filenames)
     num_downloads = 0
 
-    orig_dicoms = []
+    orig_dicoms: List[Path] = []
 
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
@@ -70,7 +76,7 @@ def download_specific_dicoms(subject,
                 if not download_bids.is_bidsified(scan, acq):
                     continue
 
-                filename = scan['info']['BIDS']['Filename']
+                filename: str = scan['info']['BIDS']['Filename']
 
                 # Search through requested files and check for matches
                 for name in filenames:
@@ -99,7 +105,7 @@ def download_specific_dicoms(subject,
                     break
 
             # Unzip the file
-            unzip_name = work_dir / dicom_unzip_name(str(series_name))
+            unzip_name: Path = work_dir / dicom_unzip_name(str(series_name))
             if not series_name.is_dir():
                 unzip_archive(work_dir / series_name,
                               unzip_name,
@@ -121,22 +127,20 @@ def download_specific_dicoms(subject,
     return orig_dicoms
 
 
-def download_all_dicoms(subject,
-                        work_dir,
-                        to_ignore,
-                        dicom_dir,
-                        is_dry_run):
+def download_all_dicoms(subject: 'ContainerSubjectOutput',
+                        work_dir: Path,
+                        to_ignore: List[str],
+                        dicom_dir: Path,
+                        is_dry_run: bool) -> None:
     '''
-    Download all DICOM series for a subject with the option to filter using
-    to_ignore.
+    Download all DICOM series for a subject with the option to filter using to_ignore.
 
     Args:
-        subject (flywheel.models.Subject): flywheel subject object
-        work_dir (pathlib.Path): path to working directory for download
-        to_ignore (list(str)): list of strings used to reject DICOMS for
-        download
-        dicom_dir (pathlib.Path): directory to extract DICOM series to
-        is_dry_run (bool): download results?
+        subject: flywheel subject object
+        work_dir: path to working directory for download
+        to_ignore: list of strings used to reject DICOMS for download
+        dicom_dir: directory to extract DICOM series to
+        is_dry_run: download results?
     '''
 
     log.info("--------------------------------------------")
@@ -148,7 +152,6 @@ def download_all_dicoms(subject,
             # Loop over files, search for the NIfTIs that were used in the
             # analysis, then download the DICOMs housed in the same contained
             for scan in acq.reload().files:
-                download_name = ""
 
                 # Only interested in DICOMS
                 if not scan.type.lower() == "dicom":
@@ -165,13 +168,13 @@ def download_all_dicoms(subject,
                     continue
 
                 log.info(f"Found: {scan.name}")
-                download_name = work_dir / scan.name
+                download_name: Path = work_dir / scan.name
 
                 if not download_name.exists():
                     log.debug("   downloading...")
                     scan.download(download_name)
 
-                unzip_name = dicom_unzip_name(scan.name)
+                unzip_name: str = dicom_unzip_name(scan.name)
 
                 # Unzip the file
                 unzip_dir = dicom_dir / unzip_name
