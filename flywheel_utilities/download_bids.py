@@ -4,11 +4,51 @@ Module for downloading bids data from flywheel
 
 import logging
 import re
+import json
 
 log = logging.getLogger(__name__)
 
 # pylint: disable=logging-fstring-interpolation
 # pylint: disable=too-many-locals
+
+
+def populate_intended_for(fw_file, sidecar):
+    '''
+    The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is
+    found in the metadata. This function is used to populate the field of the downloaded sidecar.
+
+    Args:
+        fw_file (flywheel.models.FileEntry): json sidecar file on Flywheel
+        sidecar (pathlib.Path): path to saved json sidecar
+    '''
+
+    log.debug(f"Populating IntendedFor of: {sidecar}")
+
+    # Retrieve IntendedFor information from metadata
+    intended_for_orig = fw_file['info']['IntendedFor']
+
+    if not intended_for_orig:
+        log.warning("Original IntendedFor field in metadata empty")
+        log.warning(f"file: {fw_file.name}")
+
+    # IntendedFor fields in the metadata can contain ALL files from the specified folder (typically func)
+    # Filter to only leave NIfTI files
+    intended_for = []
+    for field in intended_for_orig:
+        if field.endswith(".nii.gz") or field.endswith(".nii"):
+            intended_for.append(field)
+
+    if not intended_for:
+        log.warning("Filtered IntendedFor field empty")
+
+    # Read in downloaded sidecar and update the IntendedFor field
+    with open(sidecar, 'r', encoding='utf-8') as in_json:
+        json_decoded = json.load(in_json)
+
+    json_decoded['IntendedFor'] = intended_for
+
+    with open(sidecar, 'w', encoding='utf-8') as out_json:
+        json.dump(json_decoded, out_json, sort_keys=True, indent=2)
 
 
 def is_bidsified(scan, acq):
@@ -106,6 +146,9 @@ def download_bids_modalities(subject,
                 if not (save_path / filename).is_file() and not is_dry_run:
                     log.info("    downloaded")
                     scan.download(save_path / filename)
+                    # Populate the IntendedFor field
+                    if 'fmap' in str(save_path) and filename.endswith(".json"):
+                        populate_intended_for(scan, save_path / filename)
 
     log.info("Finished downloading modalities")
 
@@ -162,5 +205,8 @@ def download_bids_files(subject,
                 if not (save_path / filename).is_file() and not is_dry_run:
                     log.info("    downloaded")
                     scan.download(save_path / filename)
+                    # Populate the IntendedFor field
+                    if 'fmap' in str(save_path) and filename.endswith(".json"):
+                        populate_intended_for(scan, save_path / filename)
 
     log.info("Finished downloading individual files")
