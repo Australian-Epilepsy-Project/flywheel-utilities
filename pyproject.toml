@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flwyheel-utilities"
-version = "0.1.2"
+version = "0.2.0"
 description = "Package to make interfacing with Flywheel.io simpler. Especially geared towards subject-based analyses"
 readme = "README.md"
 authors = [{ name = "Aaron Capon", email = "aaron.capon@florey.edu.au" }]
