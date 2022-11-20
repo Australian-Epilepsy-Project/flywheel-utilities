@@ -4,31 +4,32 @@ Install the freesurfer licence
 
 import logging
 import os
-import sys
 from pathlib import Path
 
+from typing import TYPE_CHECKING
+# Enable explicit type hints with mypy
+if TYPE_CHECKING:
+    from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
 
 log = logging.getLogger(__name__)
 
 # pylint: disable=logging-fstring-interpolation
 
 
-def install_freesurfer_license(context):
+def install_freesurfer_license(context: 'GearToolkitContext') -> None:
     '''
-    Install Freesurfer license in correct position in $FREESURFER_HOME.
-    Assumes a license.txt file is uploaded at the project level
+    Install Freesurfer license in correct position in $FREESURFER_HOME.  Assumes a license.txt file is uploaded at the
+    project level
 
     Args:
-        context (flywheel_gear_toolkit.GearToolkitContext): gear context object
+        context: gear context object
     '''
 
     # Install path for license (at $FREESURFER_HOME)
-    if 'FREESURFER_HOME' in os.environ:
-        fs_path = Path(os.getenv('FREESURFER_HOME')) / "license.txt"
-    else:
-        log.error("Must set $FREESURFER_HOME before calling "
-                  "install_freesurfer_license()")
-        sys.exit(1)
+    free_home = os.getenv('FREESURFER_HOME')
+    assert free_home is not None, "Must set $FREESURFER_HOME before calling install_freesurfer_license()"
+
+    fs_path = Path(free_home) / "license.txt"
 
     # Find the license file at the project level
     client = context.client

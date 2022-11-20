@@ -5,27 +5,37 @@ Module for downloading bids data from flywheel
 import logging
 import re
 import json
+from pathlib import Path
+
+from typing import List, TYPE_CHECKING
+# Enable explicit type hints with mypy
+if TYPE_CHECKING:
+    from flywheel.models.file_entry import FileEntry # type: ignore
+    from flywheel.models.container_acquisition_output import ContainerAcquisitionOutput # type: ignore
+    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
 
 log = logging.getLogger(__name__)
 
 # pylint: disable=logging-fstring-interpolation
 # pylint: disable=too-many-locals
+# pylint: disable=too-many-return-statements
 
 
-def populate_intended_for(fw_file, sidecar):
+def populate_intended_for(fw_file: 'FileEntry',
+                          sidecar: Path) -> None:
     '''
     The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is
     found in the metadata. This function is used to populate the field of the downloaded sidecar.
 
     Args:
-        fw_file (flywheel.models.FileEntry): json sidecar file on Flywheel
-        sidecar (pathlib.Path): path to saved json sidecar
+        fw_file: json sidecar file on Flywheel
+        sidecar: path to saved json sidecar
     '''
 
     log.debug(f"Populating IntendedFor of: {sidecar}")
 
     # Retrieve IntendedFor information from metadata
-    intended_for_orig = fw_file['info']['IntendedFor']
+    intended_for_orig: List[str] = fw_file['info']['IntendedFor']
 
     if not intended_for_orig:
         log.warning("Original IntendedFor field in metadata empty")
@@ -51,16 +61,14 @@ def populate_intended_for(fw_file, sidecar):
         json.dump(json_decoded, out_json, sort_keys=True, indent=2)
 
 
-def is_bidsified(scan, acq):
+def is_bidsified(scan: 'FileEntry',
+                 acq: 'ContainerAcquisitionOutput') -> bool:
     '''
-    Check if scan has been properly BIDSified, or if "ignore" field has been
-    checked.
+    Check if scan has been properly BIDSified, or if "ignore" field has been checked.
 
     Args:
-        scan (flywheel.models.file_entry.FileEntry): single scan from
-        acquisition container
-        acq (flywheel.models.acquisition.Acquisition): Flywheel acquisition
-        container
+        scan: single scan from acquisition container
+        acq: acquisition containining scan
     Returns:
         (bool): download file?
     '''
@@ -91,14 +99,14 @@ def is_bidsified(scan, acq):
     return True
 
 
-def save_file(scan, bids_dir, is_dry_run):
+def save_file(scan: 'FileEntry', bids_dir: Path, is_dry_run: bool) -> None:
     '''
     Save selected NIfTI file to BIDS directory
 
     Args:
-        scan (flywheel.models.file_entry.FileEntry): file to download
-        bids_dir (pathlib.Path): path to BIDS directory
-        is_dry_run (bool): is dry run?
+        scan : file to download
+        bids_dir: path to BIDS directory
+        is_dry_run : is dry run?
     '''
     filename = scan.info['BIDS']['Filename']
 
@@ -115,19 +123,18 @@ def save_file(scan, bids_dir, is_dry_run):
             populate_intended_for(scan, save_path / filename)
 
 
-def download_bids_modalities(subject,
-                             modalities,
-                             bids_dir,
-                             is_dry_run):
+def download_bids_modalities(subject: 'ContainerSubjectOutput',
+                             modalities: List[str],
+                             bids_dir: Path,
+                             is_dry_run: bool) -> None:
     '''
-    Download required files by looping through all sessions and acquisitions
-    and analyses to find required files.
+    Download required files by looping through all sessions and acquisitions and analyses to find required files.
 
     Args:
-        subject (flywheel.models.Subject): flywheel subject object
-        modalities (list(str)): list of modalities to download
-        bids_dir (pathlib.Path): path to bids directory
-        dry_run (bool): don't download if True
+        subject: flywheel subject object
+        modalities: list of modalities to download
+        bids_dir: path to bids directory
+        dry_run: don't download if True
     '''
 
     if is_dry_run:
@@ -159,21 +166,19 @@ def download_bids_modalities(subject,
     log.info("Finished downloading modalities")
 
 
-def download_bids_files(subject,
-                        filenames,
-                        bids_dir,
-                        is_dry_run):
+def download_bids_files(subject: 'ContainerSubjectOutput',
+                        filenames: List[str],
+                        bids_dir: Path,
+                        is_dry_run: bool) -> None:
 
     '''
-    Download required files by looping through all sessions and acquisitions
-    and analyses to find required files.
+    Download required files by looping through all sessions and acquisitions and analyses to find required files.
 
     Args:
-        subject (flywheel.models.Subject): flywheel subject object
-        filenames (list(str)): list of partial names to use as regex for
-                                downloading required files
-        bids_dir (pathlib.Path): path to bids directory
-        dry_run (bool): don't download if True
+        subject: flywheel subject object
+        filenames: list of partial names to use as regex for downloading required files
+        bids_dir: path to bids directory
+        dry_run: don't download if True
     '''
 
     if is_dry_run:
@@ -196,7 +201,7 @@ def download_bids_files(subject,
                 if not is_bidsified(scan, acq):
                     continue
 
-                filename = scan.info['BIDS']['Filename']
+                filename: str = scan.info['BIDS']['Filename']
 
                 # Search through requested files and check for matches
                 for name in filenames:
