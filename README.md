@@ -3,7 +3,12 @@
 
 ## What is flywheel-utilies?
 
-flywheel-utilities is a Python package to help interface with the Flywheel ecosystem. While many of the modules are simply quality of life improvements (e.g., fly_wrappers.py and utils.py), many of the modules (e.g., bids.py, download_X.py) were designed to help analyses being performed at the subject level, including cases where the subject may have had what should be considered a single session split into multiple sessions. For example, when searching for a subject's T1-weighted image, the function `download_specific_bids` which search all of the subject's sessions to find the file. See Usage below for examples.
+flywheel-utilities is a Python package to help interface with the Flywheel ecosystem.
+While many of the modules are simply quality of life improvements (e.g., fly_wrappers.py and utils.py),
+many of the modules (e.g., bids.py, download_X.py) were designed to help analyses being performed at the subject level,
+including cases where the subject may have had what should be considered a single session split into multiple sessions.
+For example, when searching for a subject's T1-weighted image, the function `download_specific_bids`,
+will search all of the subject's sessions to find the file. See Usage below for examples.
 
 ## Tested with
 
@@ -56,20 +61,24 @@ The following usage examples require the gear_toolkit_context object to be initi
   download_bids.download_bids_files(subject, ['.*_acq-iso_rec-norm_T1w.*'], False)
 
 ```
-Note: By default the function `create_deriv_dir` assumes the gear versioning follows X.X.X_Y.Y.Y, where X.X.X is the version of the underlying BIDS app, and Y.Y.Y is the flywheel gear version. When the BIDS directory is created, only the BIDS app version will be appended to the folder name.
+Note: By default the function `create_deriv_dir` assumes the gear versioning follows X.X.X_Y.Y.Y,
+where X.X.X is the version of the underlying BIDS app, and Y.Y.Y is the flywheel gear version.
+When the BIDS directory is created, only the BIDS app version will be appended to the folder name.
 
 To change this behaviour, the arg `which_version` can be set to:
 - "second": this appends Y.Y.Y to the folder name
 - "single": use this when the gear has only X.X.X as its version
 - "none": use this to omit any versions from the directory name
 
-Note: the IntendedFor fields in the json sidecars are not populated during the BIDS Curation step on Flywheel. Instead,
-this information is stored in the metadata of the json file. So, when downloading fmaps, this IntendedFor information is
-obtained and written into the downloaded json file.
+Note: the IntendedFor fields in the json sidecars are not populated during the BIDS Curation step on Flywheel.
+Instead, this information is stored in the metadata of the json file. So, when downloading fmaps,
+this IntendedFor information is obtained and written into the downloaded json file.
 
 ### Downloading results from analysis containers
 
-Search for successful gear runs from a particular gear and download the output based on the output file name. This example ignores gears if they were run at the export level. That is, produced a DICOM series rather than NIfTI files.
+Search for successful gear runs from a particular gear and download the output based on the output file name.
+This example ignores gears if they were run at the export level.
+That is, produced a DICOM series rather than NIfTI files.
 ```
   from flywheel_utilities import download_results
 
@@ -87,7 +96,8 @@ Search for successful gear runs from a particular gear and download the output b
 
 ```
 
-Download a specific result using the destination ID of the analysis container. This example assumes 'results-dest-ID' is an option in the manifest.
+Download a specific result using the destination ID of the analysis container.
+This example assumes 'results-dest-ID' is an option in the manifest.
 ```
   from flywheel_utilities import download_results
 
@@ -119,7 +129,8 @@ The following example shows how to use the BIDS file name of a NIfTI file to dow
 
 ### Installing Freesurfer license 
 
-Install the Freesurfer license to $FREESURFER_HOME. This assumes the license.txt file is uploaded at the project level as FREESURFER_LICENSE.
+Install the Freesurfer license to $FREESURFER_HOME.
+This assumes the license.txt file is uploaded at the project level as FREESURFER_LICENSE.
 
 ```
 from flywheel_utilities import freesurfer
@@ -138,4 +149,5 @@ freesurfer.install_freesurfer_license(context)
 
 # Development and contributions
 
-Flywheel-utilities is a new package under active development, and as such may change rapidly. Contributions are very welcome! 
+Flywheel-utilities is a new package under active development, and as such may change rapidly.
+Contributions are very welcome! 
