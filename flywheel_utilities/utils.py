@@ -4,34 +4,40 @@ General functions.
 
 import logging
 
+# Enable explicit type hints with mypy
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
+
+
 log = logging.getLogger(__name__)
 
 
-def get_gear_name(context):
+def get_gear_name(context: 'GearToolkitContext') -> str:
     '''
     Get gear name and version.
 
     Args:
-        context (GearToolkitContext): flywheel gear context object
+        context: flywheel gear context object
     Returns:
-        gear_name (str): <gear_name>:<version>
+        gear_name: <gear_name>:<version>
     '''
 
-    gear_name = context.manifest['label']
+    gear_name: str = context.manifest['label']
     gear_name += ":"
     gear_name += context.manifest['version']
 
     return gear_name
 
 
-def zip_save_name(identifier, sub_label, dest_id):
+def zip_save_name(identifier: str, sub_label: str, dest_id: str) -> str:
     '''
     Construct name of output zip file
 
     Args:
-        identifier (str): base save name
-        sub_label (str): subject label <sub-XXXXXX>
-        dest_id (str): analysis destination ID
+        identifier: base save name
+        sub_label: subject label <sub-XXXXXX>
+        dest_id: analysis destination ID
     '''
 
     save_name = identifier + '_'
