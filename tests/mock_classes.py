@@ -20,3 +20,21 @@ class Context():
 
         self.manifest = {"label": gear_name,
                          "version": gear_version}
+
+
+class MockScan():
+    ''' Dummy scan docstring '''
+    # pylint: disable=too-many-arguments
+    def __init__(self,
+                 filename,
+                 folder,
+                 path,
+                 ignore,
+                 valid,
+                 file_type):
+        self.info = {"BIDS": {"Filename": filename,
+                              "Folder": folder,
+                              "Path": path,
+                              "ignore": ignore,
+                              "valid": valid}}
+        self.type = file_type

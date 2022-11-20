@@ -5,8 +5,11 @@ Test for download_bids.py
 
 import logging
 import json
-from collections import namedtuple
 from pathlib import Path
+# pylint: disable=import-error
+import pytest
+
+from tests.mock_classes import MockScan
 
 from flywheel_utilities import download_bids
 
@@ -83,89 +86,91 @@ def test_intendedfor_fail(tmp_path, caplog):
     assert caplog.messages[0] == f'Populating IntendedFor of: {sidecar}'
     assert caplog.messages[1] == 'Filtered IntendedFor field empty'
 
-def test_is_bidsified_success(caplog):
-    ''' Test successful check '''
+def test_dont_ignore_scan_is_bidsified(acquisition, caplog):
+    ''' Test is_bidsified with ignore = False '''
 
-    # Mock scan
-    mock_scan = {'info': {'BIDS': {'Folder': 'anat',
-                                   'ignore': False}
-                                   }}
+    test_scan = MockScan("T1w.nii", "anat", "sub-1/anat", False, True, "nifti")
 
-    with caplog.at_level(logging.DEBUG):
-        ret = download_bids.is_bidsified(mock_scan, "dummy_var")
-
-    assert ret is True
-
-
-def test_is_bidsified_missing_folder(caplog):
-    ''' Test missing folder name '''
-
-    # Mock scan
-    mock_scan = {'info': {'BIDS': {'Folder': '',
-                                   'ignore': False}
-                                   }}
-
-    Acq = namedtuple('acq', 'label')
-
-    acq = Acq('mock_label')
-
-    with caplog.at_level(logging.DEBUG):
-        ret = download_bids.is_bidsified(mock_scan, acq)
-
-    assert ret is False
-    assert caplog.messages[0] == 'Not properly BIDSified data: mock_label'
-
-
-def test_is_bidsified_sourcedata(caplog):
-    ''' Test data is sourcedata '''
-
-    # Mock scan
-    mock_scan = {'info': {'BIDS': {'Folder': 'sourcedata',
-                                   'ignore': False}
-                                   }}
-
-    Acq = namedtuple('acq', 'label')
-
-    acq = Acq('mock_label')
-
-    with caplog.at_level(logging.DEBUG):
-        ret = download_bids.is_bidsified(mock_scan, acq)
-
-    assert ret is False
+    with caplog.at_level(logging.INFO):
+        download = download_bids.is_bidsified(test_scan, acquisition)
+    assert download is True
     assert len(caplog.messages) == 0
 
 
-def test_is_bidsified_ignore(caplog):
-    ''' Test ignore field is True '''
+def test_ignore_scan_is_bidsified(acquisition, caplog):
+    ''' Test is_bidsified with ignore = True '''
 
-    # Mock scan
-    mock_scan = {'info': {'BIDS': {'Folder': 'anat',
-                                   'ignore': True}
-                                   }}
-
-    Acq = namedtuple('acq', 'label')
-
-    acq = Acq('mock_label')
+    test_scan = MockScan("T1w.nii", "anat", "sub-1/anat", True, True, "nifti")
 
     with caplog.at_level(logging.DEBUG):
-        ret = download_bids.is_bidsified(mock_scan, acq)
+        download = download_bids.is_bidsified(test_scan, acquisition)
 
-    assert ret is False
-    assert caplog.messages[0] == 'Ignore field True: mock_label'
+    assert download is False
+    assert caplog.messages[0] == f"Ignore field True: {acquisition.label}"
 
 
-def test_is_bidsified_ignore_missing(caplog):
-    ''' Test ignore field missing '''
+def test_not_valid_scan_is_bidsified(acquisition, caplog):
+    ''' Test is_bidsified with ignore = True '''
 
-    # Mock scan
-    mock_scan = {'info': {'BIDS': {'Folder': 'anat' }}}
-
-    Acq = namedtuple('acq', 'label')
-
-    acq = Acq('mock_label')
+    test_scan = MockScan("T1w.nii", "anat", "sub-1/anat", False, False, "nifti")
 
     with caplog.at_level(logging.DEBUG):
-        ret = download_bids.is_bidsified(mock_scan, acq)
+        download = download_bids.is_bidsified(test_scan, acquisition)
 
-    assert ret is False
-    assert caplog.messages[0] == 'No ignore field: mock_label'
+    assert download is False
+    assert caplog.messages[0] == f"Valid field False: {acquisition.label}"
+
+
+def test_bad_scan_is_bidsified(acquisition, caplog):
+    ''' Test is_bidsified when scan missing BIDS info'''
+
+    bad_scan = MockScan("T1w.nii", "anat", "sub-1/anat", True, False, "nifti")
+
+    # Remove BIDS info
+    del bad_scan.info['BIDS']
+
+    with caplog.at_level(logging.DEBUG):
+        download = download_bids.is_bidsified(bad_scan, acquisition)
+
+    assert download is False
+    assert caplog.messages[0] == f"Not properly BIDSified data: {acquisition.label}"
+
+
+def test_missing_valid_scan_is_bidsified(acquisition, caplog):
+    ''' Test is_bidsified when scan missing BIDS info'''
+
+    bad_scan = MockScan("T1w.nii", "anat", "sub-1/anat", True, False, "nifti")
+
+    # Remove BIDS info
+    del bad_scan.info['BIDS']['valid']
+
+    with caplog.at_level(logging.DEBUG):
+        download = download_bids.is_bidsified(bad_scan, acquisition)
+
+    assert download is False
+    assert caplog.messages[0] == f"File missing ignore or valid field: {acquisition.label}"
+
+
+def test_dry_save_file(caplog):
+    ''' Test dry run saving file '''
+
+    scan = MockScan("T1w.nii.gz", "anat", "sub-1/anat", False, True, "nifti")
+
+    with caplog.at_level(logging.INFO):
+        download_bids.save_file(scan, Path("./"), True)
+
+    assert caplog.messages[0] == "Located: T1w.nii.gz"
+
+
+def test_missing_bids_save_file():
+    ''' Test dry run saving file. Should never happen...'''
+
+    bad_scan = MockScan("T1w.nii.gz", "anat", "sub-1/anat", False, True, "nifti")
+
+    # Remove BIDS info
+    del bad_scan.info['BIDS']
+
+    with pytest.raises(KeyError) as error:
+        download_bids.save_file(bad_scan, Path("./"), True)
+
+    assert str(error.value) == "'BIDS'"
