@@ -110,7 +110,7 @@ This example assumes 'results-dest-ID' is an option in the manifest.
   download_results.download_specific_result(analysis,
                                             filename,
                                             context.work_dir,
-                                            is_dry_run=Flase)
+                                            is_dry_run=False)
 ```
 
 ### Downloading DICOM series based on BIDS file names
@@ -125,6 +125,16 @@ The following example shows how to use the BIDS file name of a NIfTI file to dow
                                                     file_names,
                                                     context.work_dir,
                                                     is_dry_run=False)
+```
+
+### Downloading an attachment stored at the project level
+
+The following example shows how to download an attachment stored at the project level. The download will be placed in
+the working directory (defined in the context), and will be unzipped beforehand if needed.
+```
+  from flywheel_utilities import download_attachments
+
+  download_attachments.download_attachment(context, attachment_name, is_dry_run=False)
 ```
 
 ### Installing Freesurfer license 
