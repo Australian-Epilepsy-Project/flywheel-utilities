@@ -140,7 +140,8 @@ the working directory (defined in the context), and will be unzipped beforehand 
 ### Installing Freesurfer license 
 
 Install the Freesurfer license to $FREESURFER_HOME.
-This assumes the license.txt file is uploaded at the project level as FREESURFER_LICENSE.
+This assumes the Freesurfer license information is stored at the project level in "Custom Information" as string with
+the key set to "FREESURFERLICENSE" and the value set to the contents of lisence.txt.
 
 ```
 from flywheel_utilities import freesurfer
