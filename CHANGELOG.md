@@ -1,8 +1,19 @@
 # Changelog
 
+## 0.3.0 (2022-25-21)
+
+Enhancement release
+
+### Added
+- download_attachments module for downloading files stored as attachments at the project level
+
+### Fixed
+- Wrong description of for Freesurfer module fixed, as well as error messaging for module when the Freesurfer license
+  information cannot be found
+
 ## 0.2.0 (2022-11-21)
 
-Bug fix relase along with significant formatting changes to code base.
+Bug fix release along with significant formatting changes to code base.
 
 ### Fixed
 
