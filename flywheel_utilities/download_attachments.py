@@ -46,4 +46,7 @@ def download_attachment(context: 'GearToolkitContext', name: str, is_dry_run: bo
 
     # Unzip file
     # pylint: disable=undefined-loop-variable
-    unzip_archive(context.work_dir / attach.name, context.work_dir, is_dry_run)
+    for ext in ['.tar.gz', '.bz2', '.zip']:
+        if ext in attach.name:
+            unzip_archive(context.work_dir / attach.name, context.work_dir, is_dry_run)
+            break
