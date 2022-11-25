@@ -18,8 +18,8 @@ log = logging.getLogger(__name__)
 
 def install_freesurfer_license(context: 'GearToolkitContext') -> None:
     '''
-    Install Freesurfer license in correct position in $FREESURFER_HOME.  Assumes a license.txt file is uploaded at the
-    project level
+    Install Freesurfer license in correct position in $FREESURFER_HOME. This assumes the Freesurfer license information
+    is stored at the project level in "Custom Information" as string with
 
     Args:
         context: gear context object
@@ -43,11 +43,11 @@ def install_freesurfer_license(context: 'GearToolkitContext') -> None:
 
         log.info("Using FreeSurfer license in project info.")
     else:
-        log.error("Freesurfer license.txt could not be located")
-        log.error("Check the txt file is uploaded at the project level")
-        log.error("Visit: https://docs.flywheel.io/hc/en-us/articles/"
-                  "360013235453-How-to-include-a-Freesurfer-license-file"
-                  "-in-order-to-run-a-Freesurfer-or-fMRIPrep-gear-")
+        log.error("Freesurfer license information could not be located")
+        log.error("Check the information is uploaded at the project level")
+        log.error('Must be in "Custom Information" as a string with:')
+        log.error('\tthe key set to "FREESURFER_LICENSE"')
+        log.error('\tthe value set to the contents of license.txt')
 
         raise FileNotFoundError("Freesurfer license could not be located")
 
