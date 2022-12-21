@@ -7,7 +7,7 @@ import re
 import json
 from pathlib import Path
 
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.file_entry import FileEntry # type: ignore
@@ -20,13 +20,11 @@ log = logging.getLogger(__name__)
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-return-statements
 
-
 def populate_intended_for(fw_file: 'FileEntry',
                           sidecar: Path) -> None:
     '''
     The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is
-    found in the metadata. This function is used to populate the field of the downloaded sidecar.
-
+    found in the metadata.
     Args:
         fw_file: json sidecar file on Flywheel
         sidecar: path to saved json sidecar
@@ -59,6 +57,53 @@ def populate_intended_for(fw_file: 'FileEntry',
 
     with open(sidecar, 'w', encoding='utf-8') as out_json:
         json.dump(json_decoded, out_json, sort_keys=True, indent=2)
+
+
+def post_populate_intended_for(dir_sub: Path,
+                               post_populate) -> None:
+    '''
+    The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is
+    found in the metadata. By default the IntendedFor fields with be populated with this information. This function
+    allows one to specify the modalities containing files that the fmaps should be used for.
+    E.g., supplying ['dwi', 'func'] will result in the IntendedFor fields containing all NIfTI files from the dwi and
+    func folder. This argument must be passed to `download_modalities`.
+
+    Args:
+        dir_sub: subject's BIDS directory
+        post_populate: populate IntendedFor fields with all files in the provided folders
+    '''
+
+    log.info(f"Post populating fmap IntendedFor fields with all files from: {post_populate}")
+    sessions = list(dir_sub.glob("ses-*"))
+    if not sessions:
+        sessions = [dir_sub]
+
+    for sesh in sessions:
+        intended_for = []
+        # Get dir containing all modalities (could be session or subject)
+        dirs = [x for x in sesh.glob("*") if x.is_dir() and "fmap" not in x.name]
+        for one_dir in dirs:
+            if one_dir.name in post_populate:
+                for one_file in one_dir.glob("*.nii*"):
+                    log.debug(f'Located {one_file.relative_to(one_dir.parent)}')
+                    intended_for.append(one_file.relative_to(one_dir.parent).name)
+
+        if not intended_for:
+            log.warning("Filtered IntendedFor field empty")
+
+        intended_for.sort()
+        log.debug(intended_for)
+
+        for sidecar in sesh.glob("fmap/*.json"):
+            log.debug(f"Editing sidecar: {sidecar}")
+            # Read in downloaded sidecar and update the IntendedFor field
+            with open(sidecar, 'r', encoding='utf-8') as in_json:
+                json_decoded = json.load(in_json)
+
+            json_decoded['IntendedFor'] = intended_for
+
+            with open(sidecar, 'w', encoding='utf-8') as out_json:
+                json.dump(json_decoded, out_json, sort_keys=True, indent=2)
 
 
 def is_bidsified(scan: 'FileEntry',
@@ -108,7 +153,8 @@ def is_bidsified(scan: 'FileEntry',
 def download_bids_modalities(subject: 'ContainerSubjectOutput',
                              modalities: List[str],
                              bids_dir: Path,
-                             is_dry_run: bool) -> None:
+                             is_dry_run: bool,
+                             post_populate: Optional[List] = None) -> None:
     '''
     Download required files by looping through all sessions and acquisitions and analyses to find required files.
 
@@ -117,6 +163,7 @@ def download_bids_modalities(subject: 'ContainerSubjectOutput',
         modalities: list of modalities to download
         bids_dir: path to bids directory
         dry_run: don't download if True
+        post_populate: populate fmap IntendedFor fields will all NIfTI files in the specified modalities
     '''
 
     # Data will not be downloaded if it is a dry run
@@ -154,8 +201,11 @@ def download_bids_modalities(subject: 'ContainerSubjectOutput',
                     log.info("    downloaded")
                     scan.download(save_path / filename)
                     # Populate the IntendedFor field
-                    if 'fmap' in str(save_path) and filename.endswith(".json"):
+                    if 'fmap' in str(save_path) and filename.endswith(".json") and not post_populate:
                         populate_intended_for(scan, save_path / filename)
+
+    if post_populate:
+        post_populate_intended_for(bids_dir / ('sub-' + subject.label), post_populate)
 
     log.info("Finished downloading modalities")
 
