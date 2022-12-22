@@ -1,4 +1,3 @@
-
 '''
 Test for download_bids.py
 '''
@@ -82,6 +81,99 @@ def test_intendedfor_fail(tmp_path, caplog):
 
     assert caplog.messages[0] == f'Populating IntendedFor of: {sidecar}'
     assert caplog.messages[1] == 'Filtered IntendedFor field empty'
+
+
+def test_post_populate_pass(tmp_path, caplog):
+    ''' Test successfully updating IntendedFor fields '''
+
+    # Create mock BIDS directory and touch required files
+    dir_bids = tmp_path / "bids_post/sub-00/"
+    dir_bids.mkdir(parents=True)
+    for modality in ['anat', 'func', 'fmap']:
+        dir_modality = dir_bids / modality
+        dir_modality.mkdir()
+        if modality == 'anat':
+            (dir_modality / 'sub-00_T1.nii.gz').touch()
+        elif modality == 'func':
+            task_rest = dir_modality / 'sub-00_task-rest.nii.gz'
+            task_rest.touch()
+            task_oneback = dir_modality / 'sub-00_task-oneback.nii.gz'
+            task_oneback.touch()
+        else:
+            fmap_ap = dir_modality / 'sub-00_dir-ap_epi.json'
+            fmap_pa = dir_modality / 'sub-00_dir-pa_epi.json'
+            with open(fmap_ap, 'w', encoding='utf-8') as fmap_out:
+                json.dump({'dummy_dict': 3, 'a_key': []}, fmap_out, indent=2)
+            with open(fmap_pa, 'w', encoding='utf-8') as fmap_out:
+                json.dump({'dummy_dict_pa': 1, 'some_key': 'value'}, fmap_out, indent=2)
+
+    # Populate with files from
+    populate_with = ['func']
+    with caplog.at_level(logging.DEBUG):
+        download_bids.post_populate_intended_for(dir_bids, populate_with)
+
+    assert caplog.messages[0] == ('Post populating fmap IntendedFor fields with all files from: '
+                                  f'[\'{populate_with[0]}\']')
+
+    # Check fields have been filled
+    # fmap-ap
+    with open(fmap_ap, 'r', encoding='utf-8') as fmap_in:
+        json_decoded = json.load(fmap_in)
+        assert ('IntendedFor' in json_decoded) is True
+        print(json_decoded)
+        assert json_decoded['IntendedFor'][0] == 'sub-00_task-oneback.nii.gz'
+
+    # fmpa-pa
+    with open(fmap_pa, 'r', encoding='utf-8') as fmap_in:
+        json_decoded = json.load(fmap_in)
+        assert ('IntendedFor' in json_decoded) is True
+        assert json_decoded['IntendedFor'][1] == 'sub-00_task-rest.nii.gz'
+
+
+def test_post_populate_empty(tmp_path, caplog):
+    ''' Test successfully updating IntendedFor fields '''
+
+    # Create mock BIDS directory and touch required files
+    dir_bids = tmp_path / "bids_post/sub-00/"
+    dir_bids.mkdir(parents=True)
+    for modality in ['anat', 'func', 'fmap']:
+        dir_modality = dir_bids / modality
+        dir_modality.mkdir()
+        if modality == 'anat':
+            (dir_modality / 'sub-00_T1.nii.gz').touch()
+        elif modality == 'func':
+            pass
+        else:
+            fmap_ap = dir_modality / 'sub-00_dir-ap_epi.json'
+            fmap_pa = dir_modality / 'sub-00_dir-pa_epi.json'
+            with open(fmap_ap, 'w', encoding='utf-8') as fmap_out:
+                json.dump({'dummy_dict': 3, 'a_key': []}, fmap_out, indent=2)
+            with open(fmap_pa, 'w', encoding='utf-8') as fmap_out:
+                json.dump({'dummy_dict_pa': 1, 'some_key': 'value'}, fmap_out, indent=2)
+
+    # Attmpt to populate with files from
+    populate_with = ['func']
+    with caplog.at_level(logging.DEBUG):
+        download_bids.post_populate_intended_for(dir_bids, populate_with)
+
+    assert caplog.messages[0] == ('Post populating fmap IntendedFor fields with all files from: '
+                                  f'[\'{populate_with[0]}\']')
+    assert caplog.messages[1] == 'Filtered IntendedFor field empty'
+
+
+    # Check fields have been filled
+    # fmap-ap
+    with open(fmap_ap, 'r', encoding='utf-8') as fmap_in:
+        json_decoded = json.load(fmap_in)
+        assert ('IntendedFor' in json_decoded) is True
+        assert len(json_decoded['IntendedFor']) == 0
+
+    # fmpa-pa
+    with open(fmap_pa, 'r', encoding='utf-8') as fmap_in:
+        json_decoded = json.load(fmap_in)
+        assert ('IntendedFor' in json_decoded) is True
+        assert len(json_decoded['IntendedFor']) == 0
+
 
 def test_is_bidsified_success(caplog):
     ''' Test successful check '''
