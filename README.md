@@ -55,6 +55,10 @@ The following usage examples require the gear_toolkit_context object to be initi
   # Download BIDS data
   download_bids.download_bids_modalities(subject, MODALITIES, bids_dir, is_dry_run=False)
 
+  # Download BIDS data and post populate the fmap IntendedFor fields with all files from
+  # dwi and func folders
+  download_bids.download_bids_modalities(subject, MODALITIES, bids_dir, is_dry_run=False, ['dwi', 'func'])
+
   # Download specific files by performing a regex on the BIDS file names.
   # In this case the T1-weighted scan will be downloaded. You will need to alter
   # the string to match your naming conventions.
@@ -71,8 +75,10 @@ To change this behaviour, the arg `which_version` can be set to:
 - "none": use this to omit any versions from the directory name
 
 Note: the IntendedFor fields in the json sidecars are not populated during the BIDS Curation step on Flywheel.
-Instead, this information is stored in the metadata of the json file. So, when downloading fmaps,
-this IntendedFor information is obtained and written into the downloaded json file.
+Instead, this information is stored in the metadata of the json file. So, when downloading fmaps, either
+this IntendedFor metadata is retrieved and written into the downloaded json file, or, one can request a post
+population of the IntendedFor fields which after downloading the bids data set,
+will scan the desired directories and add all NIfTI files found within to the IntendedFor fields of all fmap sidecars.
 
 ### Downloading results from analysis containers
 
