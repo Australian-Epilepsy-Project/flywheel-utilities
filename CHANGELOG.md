@@ -1,6 +1,16 @@
 # Changelog
 
-## 0.3.0 (2022-25-21)
+## 0.4.0 (2022-12-23)
+
+Enhancement release
+
+### Added
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/14: post_populate_intended_for() function added to download_bids module to allow one to fill the IntendedFor fields of the fmaps with files in the downloaded dataset. That is, to post populate, rather then use the metadata stored on Flywheel.
+
+### Updated
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/15: certifi version increase due to security implications. See: https://groups.google.com/a/mozilla.org/g/dev-security-policy/c/oxX69KFvsm4/m/yLohoVqtCgAJ
+
+## 0.3.0 (2022-11-25)
 
 Enhancement release
 
