@@ -1,6 +1,6 @@
-'''
+"""
 Test for basic_logging.py
-'''
+"""
 
 import logging
 
@@ -10,8 +10,9 @@ from tests.mock_classes import Context
 
 logger = logging.getLogger()
 
+
 def test_setup_basic_logging():
-    ''' Test setup_basic_logging '''
+    """Test setup_basic_logging"""
 
     context_debug = Context("DEBUG")
     setup_basic_logging(context_debug)
