@@ -2,17 +2,19 @@
 Module for downloading bids data from flywheel
 '''
 
+import json
 import logging
 import re
-import json
 from pathlib import Path
+from typing import TYPE_CHECKING, List, Optional
 
-from typing import List, TYPE_CHECKING, Optional
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel.models.file_entry import FileEntry # type: ignore
-    from flywheel.models.container_acquisition_output import ContainerAcquisitionOutput # type: ignore
-    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
+    from flywheel.models.container_acquisition_output import \
+        ContainerAcquisitionOutput  # type: ignore
+    from flywheel.models.container_subject_output import \
+        ContainerSubjectOutput  # type: ignore
+    from flywheel.models.file_entry import FileEntry  # type: ignore
 
 log = logging.getLogger(__name__)
 

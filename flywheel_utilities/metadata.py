@@ -7,10 +7,11 @@ Tag subjects with the gear and version number
 # pylint: disable=wrong-import-position
 import logging
 import sys
-import flywheel # type: ignore
-
 # Enable explicit type hints with mypy
 from typing import TYPE_CHECKING
+
+import flywheel  # type: ignore
+
 if TYPE_CHECKING:
     from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
     from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore

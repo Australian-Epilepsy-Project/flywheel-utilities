@@ -6,15 +6,17 @@ Simple wrappers to use Flywheel.
 
 import logging
 import sys
-# pylint: disable=import-error
-import flywheel # type: ignore
-
 # pylint: disable=wrong-import-order
 from typing import TYPE_CHECKING
+
+# pylint: disable=import-error
+import flywheel  # type: ignore
+
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
-    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
+    from flywheel.models.container_subject_output import \
+        ContainerSubjectOutput  # type: ignore
+    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
 
 
 log = logging.getLogger(__name__)

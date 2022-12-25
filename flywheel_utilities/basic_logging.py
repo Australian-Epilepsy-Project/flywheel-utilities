@@ -3,11 +3,11 @@ Setup basic logging with the log level determined from the Flywheel manifest var
 '''
 
 import logging
-
 from typing import TYPE_CHECKING
+
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
+    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
 
 def setup_basic_logging(context: 'GearToolkitContext',
                         log_format: str = '[%(asctime)s %(levelname)s] %(message)s',

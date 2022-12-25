@@ -7,11 +7,12 @@ Download and unzip an attachment from the Flywheel project
 import logging
 import sys
 from typing import TYPE_CHECKING
+
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
 
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive # type: ignore
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive  # type: ignore
 
 logger = logging.getLogger()
 

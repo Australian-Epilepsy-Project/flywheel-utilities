@@ -2,16 +2,17 @@
 BIDS related functions
 '''
 
-import logging
 import json
+import logging
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING, List
 
-from typing import List, TYPE_CHECKING
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
-    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
+    from flywheel.models.container_subject_output import \
+        ContainerSubjectOutput  # type: ignore
+    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
 
 # pylint: disable=wrong-import-position
 from flywheel_utilities import utils

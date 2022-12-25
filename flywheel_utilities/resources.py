@@ -5,8 +5,9 @@ Determine and set computing resources.
 import logging
 import os
 from math import floor
-from typing import Tuple, Optional, Union
-import psutil # type: ignore
+from typing import Optional, Tuple, Union
+
+import psutil  # type: ignore
 
 log = logging.getLogger(__name__)
 

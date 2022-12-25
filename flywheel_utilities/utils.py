@@ -3,11 +3,11 @@ General functions.
 '''
 
 import logging
-
 # Enable explicit type hints with mypy
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext # type: ignore
+    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
 
 
 log = logging.getLogger(__name__)

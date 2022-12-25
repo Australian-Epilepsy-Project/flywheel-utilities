@@ -4,19 +4,22 @@ Module for downloading data from flywheel
 
 import logging
 import sys
-from pathlib import Path
 from functools import reduce
-from zipfile import ZipFile
-# pylint: disable=import-error
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive # type: ignore
-
+from pathlib import Path
 # pylint: disable=wrong-import-order
-from typing import Dict, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List
+from zipfile import ZipFile
+
+# pylint: disable=import-error
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive  # type: ignore
+
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel.models.file_entry import FileEntry # type: ignore
-    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
-    from flywheel.models.container_analysis_output import ContainerAnalysisOutput # type: ignore
+    from flywheel.models.container_analysis_output import \
+        ContainerAnalysisOutput  # type: ignore
+    from flywheel.models.container_subject_output import \
+        ContainerSubjectOutput  # type: ignore
+    from flywheel.models.file_entry import FileEntry  # type: ignore
 
 log = logging.getLogger(__name__)
 

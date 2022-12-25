@@ -8,10 +8,10 @@ Module for downloading data from flywheel
 import logging
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING, List
 
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive # type: ignore
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive  # type: ignore
 
-from typing import List, TYPE_CHECKING
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
