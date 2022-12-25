@@ -76,9 +76,7 @@ def post_populate_intended_for(dir_sub: Path, post_populate) -> None:
         post_populate: populate IntendedFor fields with all files in the provided folders
     """
 
-    log.info(
-        f"Post populating fmap IntendedFor fields with all files from: {post_populate}"
-    )
+    log.info(f"Post populating fmap IntendedFor fields with all files from: {post_populate}")
     sessions = list(dir_sub.glob("ses-*"))
     if not sessions:
         sessions = [dir_sub]
@@ -207,11 +205,7 @@ def download_bids_modalities(
                     log.info("    downloaded")
                     scan.download(save_path / filename)
                     # Populate the IntendedFor field
-                    if (
-                        "fmap" in str(save_path)
-                        and filename.endswith(".json")
-                        and not post_populate
-                    ):
+                    if "fmap" in str(save_path) and filename.endswith(".json") and not post_populate:
                         populate_intended_for(scan, save_path / filename)
 
     if post_populate:

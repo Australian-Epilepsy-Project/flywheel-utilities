@@ -44,9 +44,7 @@ def get_subject(context: "GearToolkitContext") -> "ContainerSubjectOutput":
     return subject
 
 
-def check_run_level(
-    context: "GearToolkitContext", which_level: str, gear_type: str = "analysis"
-) -> None:
+def check_run_level(context: "GearToolkitContext", which_level: str, gear_type: str = "analysis") -> None:
     """
     Check at which level the gear is being run and cross check with the supplied which_level string. By default, the
     gear will also be checked that it is running at the analysis level. This can be overridden via the gear_type
@@ -61,14 +59,12 @@ def check_run_level(
     try:
         destination = context.client.get(context.destination["id"])
     except flywheel.ApiException as err:
-        log.error("The destination id does not point to a valid " "analysis container")
+        log.error("The destination id does not point to a valid analysis container")
         log.error(f"{err}")
         sys.exit(1)
 
     if destination.container_type != gear_type:
-        log.error(
-            "The destination ID does not point to a valid " f"{gear_type} container"
-        )
+        log.error("The destination ID does not point to a valid " f"{gear_type} container")
         sys.exit(1)
 
     if destination.parent.type != which_level:

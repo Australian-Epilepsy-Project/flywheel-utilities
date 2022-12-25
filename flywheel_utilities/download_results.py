@@ -45,9 +45,7 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
     # Get list of all files in the zip file
     with ZipFile(zip_name, "r") as in_zip:
         dirs = [info.filename for info in in_zip.infolist() if info.is_dir()]
-        files = [
-            info.filename for info in in_zip.infolist() if not str(info).endswith("/")
-        ]
+        files = [info.filename for info in in_zip.infolist() if not str(info).endswith("/")]
 
     if len(dirs) == 0 and len(files) == 0:
         log.error("Zip file is empty!")
@@ -105,10 +103,7 @@ def download_previous_result(
         if "gear-export" in analysis.job.config["config"]:
             if analysis.job.config["config"]["gear-export"] != export_gear:
                 return False
-        return (
-            gear_name in analysis.gear_info["name"]
-            and analysis.job["state"] == "complete"
-        )
+        return gear_name in analysis.gear_info["name"] and analysis.job["state"] == "complete"
 
     analyses = list(filter(filter_completed, analyses))
 

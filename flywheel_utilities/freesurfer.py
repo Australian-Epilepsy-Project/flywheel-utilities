@@ -27,9 +27,7 @@ def install_freesurfer_license(context: "GearToolkitContext") -> None:
 
     # Install path for license (at $FREESURFER_HOME)
     free_home = os.getenv("FREESURFER_HOME")
-    assert (
-        free_home is not None
-    ), "Must set $FREESURFER_HOME before calling install_freesurfer_license()"
+    assert free_home is not None, "Must set $FREESURFER_HOME before calling install_freesurfer_license()"
 
     fs_path = Path(free_home) / "license.txt"
 

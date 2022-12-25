@@ -24,9 +24,7 @@ log = logging.getLogger(__name__)
 # pylint: disable=logging-fstring-interpolation
 
 
-def update_subject_tags(
-    context: "GearToolkitContext", subject: "ContainerSubjectOutput"
-) -> None:
+def update_subject_tags(context: "GearToolkitContext", subject: "ContainerSubjectOutput") -> None:
     """
     Update the subject's tag to indicate the gear has been run
 

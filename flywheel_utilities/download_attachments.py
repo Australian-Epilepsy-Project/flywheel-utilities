@@ -19,9 +19,7 @@ logger = logging.getLogger()
 # pylint: disable=logging-fstring-interpolation
 
 
-def download_attachment(
-    context: "GearToolkitContext", name: str, is_dry_run: bool
-) -> None:
+def download_attachment(context: "GearToolkitContext", name: str, is_dry_run: bool) -> None:
     """
     Download an attachment from the project and unzip into the working directory
 
@@ -32,9 +30,7 @@ def download_attachment(
     """
 
     # Get the project
-    proj_id: str = context.client.get_analysis(context.destination["id"])["parents"][
-        "project"
-    ]
+    proj_id: str = context.client.get_analysis(context.destination["id"])["parents"]["project"]
     proj = context.client.get_project(proj_id)
 
     # Search attachments for requested file

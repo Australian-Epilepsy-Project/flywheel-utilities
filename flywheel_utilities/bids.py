@@ -52,7 +52,7 @@ def add_dataset_description(bids_dir: Path) -> None:
         with open(description, "w", encoding="utf-8") as data_description:
             json.dump(info, data_description, indent=4)
 
-        log.info("Dummy dataset_description.json created " "in root bids directory")
+        log.info("Dummy dataset_description.json created in root bids directory")
 
     # Create dummy README
     readme = bids_dir / "README"
@@ -102,9 +102,7 @@ def create_bids_dir(
     return sub_path.parent
 
 
-def create_deriv_dir(
-    context: "GearToolkitContext", sub_label: str, which_version: str = "first"
-) -> Path:
+def create_deriv_dir(context: "GearToolkitContext", sub_label: str, which_version: str = "first") -> Path:
     """
     Create output folder to store results. The folder name and version are retrieved from the manifest label and
     version. The folder structure follows the specification for BIDS derivatives (<pipeline>-v<version>).  E.g.,
