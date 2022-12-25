@@ -1,6 +1,6 @@
-'''
+"""
 Determine and set computing resources.
-'''
+"""
 
 import logging
 import os
@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
-    '''
+    """
     Provide the desired number of cpus and threads, and have maximum number allowed returned.
 
     Args:
@@ -24,7 +24,7 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
     Returns:
         n_cpus: number of threads across all processes
         omp_threads: number of threads per process
-    '''
+    """
 
     avail_cpus: Optional[int] = os.cpu_count()
     assert avail_cpus is not None, "Could not determine available CPUs"
@@ -58,14 +58,14 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
 
 
 def determine_max_mem(mem_mb: Union[int, float]) -> float:
-    '''
+    """
     Provide the desired amount of memory and have the maximum allowed memory usage returned.
 
     Args:
         mem_mb: requested memory allocation in GiB
     Returns:
         mem_mb: allocated memory (in GiB)
-    '''
+    """
 
     mem_total = psutil.virtual_memory().total / (1024**3)
     mem_avail = psutil.virtual_memory().available / (1024**3)
