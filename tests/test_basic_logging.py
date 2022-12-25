@@ -5,6 +5,7 @@ Test for basic_logging.py
 import logging
 
 from flywheel_utilities.basic_logging import setup_basic_logging
+
 from tests.mock_classes import Context
 
 logger = logging.getLogger()

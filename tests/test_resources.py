@@ -6,6 +6,7 @@ import os
 
 from flywheel_utilities import resources
 
+
 def test_determine_n_cpus():
     ''' Test determine_n_cpus '''
 

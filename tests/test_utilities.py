@@ -4,6 +4,7 @@ Test for utils.py
 
 
 from flywheel_utilities import utils
+
 from tests.mock_classes import Context
 
 

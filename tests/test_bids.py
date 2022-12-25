@@ -7,6 +7,7 @@ from flywheel_utilities import bids
 
 from tests.mock_classes import Context
 
+
 def test_add_dataset_description(tmp_path):
     ''' Test add_dataset_desctiption '''
 

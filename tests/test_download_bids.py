@@ -2,12 +2,13 @@
 Test for download_bids.py
 '''
 
-import logging
 import json
+import logging
 from collections import namedtuple
 from pathlib import Path
 
 from flywheel_utilities import download_bids
+
 
 def test_intendedfor_pass(tmp_path, caplog):
     ''' Test successful population of IntendedFor '''
