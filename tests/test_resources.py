@@ -1,13 +1,14 @@
-'''
+"""
 Tests for resources.py
-'''
+"""
 
 import os
 
 from flywheel_utilities import resources
 
+
 def test_determine_n_cpus():
-    ''' Test determine_n_cpus '''
+    """Test determine_n_cpus"""
 
     # Request sufficiently low number
     req_cpus = 1
@@ -31,7 +32,7 @@ def test_determine_n_cpus():
 
 
 def test_determine_max_mem():
-    ''' Test determine_max_mem '''
+    """Test determine_max_mem"""
 
     # Request sufficiently low amount of mem
     req_mem = 0.5

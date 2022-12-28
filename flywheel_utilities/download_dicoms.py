@@ -1,37 +1,33 @@
-'''
+"""
 Module for downloading data from flywheel
-'''
+"""
 
-# pylint: disable=import-error
-# pylint: disable=wrong-import-order
-# pylint: disable=wrong-import-position
 import logging
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING, List
 
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive # type: ignore
-
-from typing import List, TYPE_CHECKING
-# Enable explicit type hints with mypy
-if TYPE_CHECKING:
-    from flywheel.models.container_subject_output import ContainerSubjectOutput # type: ignore
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
 from flywheel_utilities import download_bids
 
-log = logging.getLogger(__name__)
+# Enable explicit type hints with mypy
+if TYPE_CHECKING:
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
 
-# pylint: disable=logging-fstring-interpolation
+
+log = logging.getLogger(__name__)
 
 
 def dicom_unzip_name(name: str) -> str:
-    '''
+    """
     Construct name for unzipped DICOM series from label on Flywheel. Remove spaces and .zip.
 
     Args:
         name: filename
     Returns:
         clean_name: filename
-    '''
+    """
 
     clean_name = name.replace(".dicom", "")
     clean_name = clean_name.replace(".zip", "")
@@ -40,13 +36,15 @@ def dicom_unzip_name(name: str) -> str:
 
 
 # pylint: disable=too-many-branches
-def download_specific_dicoms(subject: 'ContainerSubjectOutput',
-                             filenames: List[str],
-                             work_dir: Path,
-                             is_dry_run: bool = False) -> List[Path]:
-    '''
-    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the container containing
-    the correct DICOM series.
+def download_specific_dicoms(
+    subject: "ContainerSubjectOutput",
+    filenames: List[str],
+    work_dir: Path,
+    is_dry_run: bool = False,
+) -> List[Path]:
+    """
+    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the
+    container containing the correct DICOM series.
 
     Args:
         subject: flywheel subject object
@@ -55,7 +53,7 @@ def download_specific_dicoms(subject: 'ContainerSubjectOutput',
         is_dry_run: download results?
     Returns:
         orig_dicoms: path to unzipped DICOMs
-    '''
+    """
 
     log.info("--------------------------------------------")
     log.info("Downloading specific DICOM series")
@@ -76,7 +74,7 @@ def download_specific_dicoms(subject: 'ContainerSubjectOutput',
                 if not download_bids.is_bidsified(scan, acq):
                     continue
 
-                filename: str = scan['info']['BIDS']['Filename']
+                filename: str = scan["info"]["BIDS"]["Filename"]
 
                 # Search through requested files and check for matches
                 for name in filenames:
@@ -107,9 +105,7 @@ def download_specific_dicoms(subject: 'ContainerSubjectOutput',
             # Unzip the file
             unzip_name: Path = work_dir / dicom_unzip_name(str(series_name))
             if not series_name.is_dir():
-                unzip_archive(work_dir / series_name,
-                              unzip_name,
-                              is_dry_run)
+                unzip_archive(work_dir / series_name, unzip_name, is_dry_run)
 
             orig_dicoms.append(unzip_name)
 
@@ -127,12 +123,14 @@ def download_specific_dicoms(subject: 'ContainerSubjectOutput',
     return orig_dicoms
 
 
-def download_all_dicoms(subject: 'ContainerSubjectOutput',
-                        work_dir: Path,
-                        to_ignore: List[str],
-                        dicom_dir: Path,
-                        is_dry_run: bool) -> None:
-    '''
+def download_all_dicoms(
+    subject: "ContainerSubjectOutput",
+    work_dir: Path,
+    to_ignore: List[str],
+    dicom_dir: Path,
+    is_dry_run: bool,
+) -> None:
+    """
     Download all DICOM series for a subject with the option to filter using to_ignore.
 
     Args:
@@ -141,7 +139,7 @@ def download_all_dicoms(subject: 'ContainerSubjectOutput',
         to_ignore: list of strings used to reject DICOMS for download
         dicom_dir: directory to extract DICOM series to
         is_dry_run: download results?
-    '''
+    """
 
     log.info("--------------------------------------------")
     log.info("Downloading multiple DICOM series")
@@ -179,6 +177,4 @@ def download_all_dicoms(subject: 'ContainerSubjectOutput',
                 # Unzip the file
                 unzip_dir = dicom_dir / unzip_name
                 if not unzip_dir.exists():
-                    unzip_archive(download_name,
-                                  unzip_dir,
-                                  is_dry_run)
+                    unzip_archive(download_name, unzip_dir, is_dry_run)

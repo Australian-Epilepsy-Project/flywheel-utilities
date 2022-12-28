@@ -19,4 +19,20 @@ requires-python = ">3.6"
 [project.urls]
 Homepage = "https://github.com/Australian-Epilepsy-Project/flywheel-utilities"
 
+[tool.pylint.messages_control]
+max-line-length = 100
+disable = 'wrong-import-position,logging-fstring-interpolation,import-error'
 
+[tool.pylint.SIMILARITIES]
+min-similarity-lines = 6
+ignore-comments = true
+ignore-docstrings = true
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
