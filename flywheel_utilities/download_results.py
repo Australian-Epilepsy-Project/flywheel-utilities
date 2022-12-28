@@ -6,7 +6,6 @@ import logging
 import sys
 from functools import reduce
 from pathlib import Path
-
 from typing import TYPE_CHECKING, Dict, List
 from zipfile import ZipFile
 
@@ -14,12 +13,8 @@ from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel.models.container_analysis_output import (
-        ContainerAnalysisOutput,
-    )
-    from flywheel.models.container_subject_output import (
-        ContainerSubjectOutput,
-    )
+    from flywheel.models.container_analysis_output import ContainerAnalysisOutput
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel.models.file_entry import FileEntry
 
 log = logging.getLogger(__name__)
@@ -29,9 +24,9 @@ log = logging.getLogger(__name__)
 
 def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
     """
-    Unzip the downloaded results. Attempts to find the zipped folder name first, however if there are not nested
-    folders, the unzip name is determined by stripping the zipped names of everything after and inlcuding "_sub-".
-    Only unzips the file if not already present.
+    Unzip the downloaded results. Attempts to find the zipped folder name first, however if there
+    are not nested folders, the unzip name is determined by stripping the zipped names of
+    everything after and inlcuding "_sub-".  Only unzips the file if not already present.
 
     Args:
         zip_name: full path to zip file
@@ -73,8 +68,9 @@ def download_previous_result(
     is_dry_run: bool = False,
 ) -> int:
     """
-    Download a result from a specific gear, with the option to filter via the job tags. One can specify if searching for
-    processing results or export results via export_gear. Results will be downloaded to 'work_dir'.
+    Download a result from a specific gear, with the option to filter via the job tags.
+    One can specify if searching for processing results or export results via export_gear.
+    Results will be downloaded to 'work_dir'.
 
     Args:
         subject: flywheel subject object
@@ -171,7 +167,8 @@ def download_specific_result(
     analysis: "ContainerAnalysisOutput", filename: str, work_dir: Path, is_dry_run: bool
 ) -> None:
     """
-    Download results using destination ID from previous gear run. Results will be downloaded into work_dir.
+    Download results using destination ID from previous gear run.
+    Results will be downloaded into work_dir.
 
     Args:
         analysis:

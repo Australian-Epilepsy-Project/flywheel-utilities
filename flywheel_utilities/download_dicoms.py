@@ -43,8 +43,8 @@ def download_specific_dicoms(
     is_dry_run: bool = False,
 ) -> List[Path]:
     """
-    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the container containing
-    the correct DICOM series.
+    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the
+    container containing the correct DICOM series.
 
     Args:
         subject: flywheel subject object

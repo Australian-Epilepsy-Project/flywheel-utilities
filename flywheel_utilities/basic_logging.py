@@ -1,5 +1,6 @@
 """
-Setup basic logging with the log level determined from the Flywheel manifest variable 'gear-log-level'.
+Setup basic logging with the log level determined from the Flywheel manifest
+variable 'gear-log-level'.
 """
 
 import logging

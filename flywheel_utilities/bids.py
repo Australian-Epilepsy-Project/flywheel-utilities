@@ -9,11 +9,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING, List
 
 from flywheel_utilities import utils
+
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel.models.container_subject_output import (
-        ContainerSubjectOutput,
-    )
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel_geartoolkit_context import GearToolkitContext
 
 
@@ -66,8 +65,8 @@ def create_bids_dir(
     add_description: bool = True,
 ) -> Path:
     """
-    Create BIDS directory, and a root level dummy dataset description if requested. The BIDS directory will maintain any
-    session structure found on Flywheel.
+    Create BIDS directory, and a root level dummy dataset description if requested. The BIDS
+    directory will maintain any session structure found on Flywheel.
 
     Args:
         context: gear context object
@@ -99,17 +98,20 @@ def create_bids_dir(
     return sub_path.parent
 
 
-def create_deriv_dir(context: "GearToolkitContext", sub_label: str, which_version: str = "first") -> Path:
+def create_deriv_dir(
+    context: "GearToolkitContext", sub_label: str, which_version: str = "first"
+) -> Path:
     """
-    Create output folder to store results. The folder name and version are retrieved from the manifest label and
-    version. The folder structure follows the specification for BIDS derivatives (<pipeline>-v<version>).  E.g.,
-    /fMRIPrep-v21.0.0/sub-XXXXX/
+    Create output folder to store results. The folder name and version are retrieved from the
+    manifest label and version. The folder structure follows the specification for BIDS
+    derivatives (<pipeline>-v<version>).  E.g., /fMRIPrep-v21.0.0/sub-XXXXX/
 
     Args:
         context: gear context object
         sub_label: subject label (XXXXXX)
-        which_version: if using X.X.X_Y.Y.Y versioning, which position is the version of the underlying BIDS App.
-        Specify single if only one version present, and specify none if no version is to be include
+        which_version: if using X.X.X_Y.Y.Y versioning, which position is the version of the
+        underlying BIDS App. Specify single if only one version present, and specify none if no
+        version is to be include
 
     Returns
         deriv_dir: path to derivatives folder

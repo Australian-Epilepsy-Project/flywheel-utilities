@@ -6,16 +6,13 @@ Simple wrappers to use Flywheel.
 
 import logging
 import sys
-
 from typing import TYPE_CHECKING
 
 import flywheel
 
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel.models.container_subject_output import (
-        ContainerSubjectOutput,
-    )
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel_geartoolkit_context import GearToolkitContext
 
 
@@ -40,11 +37,13 @@ def get_subject(context: "GearToolkitContext") -> "ContainerSubjectOutput":
     return subject
 
 
-def check_run_level(context: "GearToolkitContext", which_level: str, gear_type: str = "analysis") -> None:
+def check_run_level(
+    context: "GearToolkitContext", which_level: str, gear_type: str = "analysis"
+) -> None:
     """
-    Check at which level the gear is being run and cross check with the supplied which_level string. By default, the
-    gear will also be checked that it is running at the analysis level. This can be overridden via the gear_type
-    argument.
+    Check at which level the gear is being run and cross check with the supplied which_level string.
+    By default, the gear will also be checked that it is running at the analysis level.
+    This can be overridden via the gear_type argument.
 
     Args:
         context: gear context object

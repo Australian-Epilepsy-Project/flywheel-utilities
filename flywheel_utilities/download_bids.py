@@ -10,12 +10,8 @@ from typing import TYPE_CHECKING, List, Optional
 
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel.models.container_acquisition_output import (
-        ContainerAcquisitionOutput,
-    )
-    from flywheel.models.container_subject_output import (
-        ContainerSubjectOutput,
-    )
+    from flywheel.models.container_acquisition_output import ContainerAcquisitionOutput
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel.models.file_entry import FileEntry
 
 log = logging.getLogger(__name__)
@@ -25,8 +21,8 @@ log = logging.getLogger(__name__)
 # pylint: disable=too-many-return-statements
 def populate_intended_for(fw_file: "FileEntry", sidecar: Path) -> None:
     """
-    The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is
-    found in the metadata.
+    The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this
+    information is found in the metadata.
     Args:
         fw_file: json sidecar file on Flywheel
         sidecar: path to saved json sidecar
@@ -41,7 +37,7 @@ def populate_intended_for(fw_file: "FileEntry", sidecar: Path) -> None:
         log.warning("Original IntendedFor field in metadata empty")
         log.warning(f"file: {fw_file.name}")
 
-    # IntendedFor fields in the metadata can contain ALL files from the specified folder (typically func)
+    # IntendedFor fields in the metadata can contain ALL files from the specified folder
     # Filter to only leave NIfTI files
     intended_for = []
     for field in intended_for_orig:
@@ -63,11 +59,12 @@ def populate_intended_for(fw_file: "FileEntry", sidecar: Path) -> None:
 
 def post_populate_intended_for(dir_sub: Path, post_populate) -> None:
     """
-    The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is
-    found in the metadata. By default the IntendedFor fields with be populated with this information. This function
-    allows one to specify the modalities containing files that the fmaps should be used for.
-    E.g., supplying ['dwi', 'func'] will result in the IntendedFor fields containing all NIfTI files from the dwi and
-    func folder. This argument must be passed to `download_modalities`.
+    The json sidecars stored on Flywheel do not have the IntendedFor field populated.
+    Instead, this information is found in the metadata. By default the IntendedFor fields with be
+    populated with this information. This function allows one to specify the modalities containing
+    files that the fmaps should be used for.
+    E.g., supplying ['dwi', 'func'] will result in the IntendedFor fields containing all NIfTI
+    files from the dwi and func folder. This argument must be passed to `download_modalities`.
 
     Args:
         dir_sub: subject's BIDS directory
@@ -158,14 +155,15 @@ def download_bids_modalities(
     post_populate: Optional[List] = None,
 ) -> None:
     """
-    Download required files by looping through all sessions and acquisitions and analyses to find required files.
+    Download required files by looping through all sessions, acquisitions and analyses to find
+    required files.
 
     Args:
         subject: flywheel subject object
         modalities: list of modalities to download
         bids_dir: path to bids directory
         dry_run: don't download if True
-        post_populate: populate fmap IntendedFor fields will all NIfTI files in the specified modalities
+        post_populate: list of modalities to populate the IntendedFor fields with
     """
 
     # Data will not be downloaded if it is a dry run
@@ -203,7 +201,11 @@ def download_bids_modalities(
                     log.info("    downloaded")
                     scan.download(save_path / filename)
                     # Populate the IntendedFor field
-                    if "fmap" in str(save_path) and filename.endswith(".json") and not post_populate:
+                    if (
+                        "fmap" in str(save_path)
+                        and filename.endswith(".json")
+                        and not post_populate
+                    ):
                         populate_intended_for(scan, save_path / filename)
 
     if post_populate:
@@ -220,7 +222,8 @@ def download_bids_files(
 ) -> None:
 
     """
-    Download required files by looping through all sessions and acquisitions and analyses to find required files.
+    Download required files by looping through all sessions and acquisitions and analyses to find
+    required files.
 
     Args:
         subject: flywheel subject object

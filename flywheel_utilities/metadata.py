@@ -13,8 +13,8 @@ import flywheel
 from flywheel_utilities import utils
 
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext
     from flywheel.models.container_subject_output import ContainerSubjectOutput
+    from flywheel_geartoolkit_context import GearToolkitContext
 
 
 log = logging.getLogger(__name__)

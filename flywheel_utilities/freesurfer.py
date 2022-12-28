@@ -16,8 +16,9 @@ log = logging.getLogger(__name__)
 
 def install_freesurfer_license(context: "GearToolkitContext") -> None:
     """
-    Install Freesurfer license in correct position in $FREESURFER_HOME. This assumes the Freesurfer license information
-    is stored at the project level in "Custom Information" as string with
+    Install Freesurfer license in correct position in $FREESURFER_HOME.
+    This assumes the Freesurfer license information is stored at the project level in the
+    "Custom Information" section as a string.
 
     Args:
         context: gear context object
@@ -25,7 +26,9 @@ def install_freesurfer_license(context: "GearToolkitContext") -> None:
 
     # Install path for license (at $FREESURFER_HOME)
     free_home = os.getenv("FREESURFER_HOME")
-    assert free_home is not None, "Must set $FREESURFER_HOME before calling install_freesurfer_license()"
+    assert (
+        free_home is not None
+    ), "Must set $FREESURFER_HOME before calling install_freesurfer_license()"
 
     fs_path = Path(free_home) / "license.txt"
 
