@@ -7,26 +7,23 @@ import sys
 from functools import reduce
 from pathlib import Path
 
-# pylint: disable=wrong-import-order
 from typing import TYPE_CHECKING, Dict, List
 from zipfile import ZipFile
 
-# pylint: disable=import-error
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive  # type: ignore
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_analysis_output import (
         ContainerAnalysisOutput,
-    )  # type: ignore
+    )
     from flywheel.models.container_subject_output import (
         ContainerSubjectOutput,
-    )  # type: ignore
-    from flywheel.models.file_entry import FileEntry  # type: ignore
+    )
+    from flywheel.models.file_entry import FileEntry
 
 log = logging.getLogger(__name__)
 
-# pylint: disable=logging-fstring-interpolation
 # pylint: disable=too-many-locals
 
 

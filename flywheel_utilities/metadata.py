@@ -2,26 +2,22 @@
 Tag subjects with the gear and version number
 """
 
-# pylint: disable=import-error
-# pylint: disable=wrong-import-order
-# pylint: disable=wrong-import-position
 import logging
 import sys
 
 # Enable explicit type hints with mypy
 from typing import TYPE_CHECKING
 
-import flywheel  # type: ignore
-
-if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
-    from flywheel.models.container_subject_output import ContainerSubjectOutput  # type: ignore
+import flywheel
 
 from flywheel_utilities import utils
 
-log = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from flywheel_geartoolkit_context import GearToolkitContext
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
 
-# pylint: disable=logging-fstring-interpolation
+
+log = logging.getLogger(__name__)
 
 
 def update_subject_tags(context: "GearToolkitContext", subject: "ContainerSubjectOutput") -> None:

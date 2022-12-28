@@ -8,19 +8,16 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING, List
 
+from flywheel_utilities import utils
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import (
         ContainerSubjectOutput,
-    )  # type: ignore
-    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
+    )
+    from flywheel_geartoolkit_context import GearToolkitContext
 
-# pylint: disable=wrong-import-position
-from flywheel_utilities import utils
 
 log = logging.getLogger(__name__)
-
-# pylint: disable=logging-fstring-interpolation
 
 
 def add_dataset_description(bids_dir: Path) -> None:

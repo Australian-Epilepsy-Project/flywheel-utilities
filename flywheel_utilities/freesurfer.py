@@ -9,11 +9,9 @@ from typing import TYPE_CHECKING
 
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
+    from flywheel_geartoolkit_context import GearToolkitContext
 
 log = logging.getLogger(__name__)
-
-# pylint: disable=logging-fstring-interpolation
 
 
 def install_freesurfer_license(context: "GearToolkitContext") -> None:

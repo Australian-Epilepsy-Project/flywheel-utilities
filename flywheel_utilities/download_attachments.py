@@ -2,21 +2,18 @@
 Download and unzip an attachment from the Flywheel project
 """
 
-# pylint: disable=import-error
-# pylint: disable=wrong-import-position
 import logging
 import sys
 from typing import TYPE_CHECKING
 
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
+
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
-    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
+    from flywheel_geartoolkit_context import GearToolkitContext
 
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive  # type: ignore
 
 logger = logging.getLogger()
-
-# pylint: disable=logging-fstring-interpolation
 
 
 def download_attachment(context: "GearToolkitContext", name: str, is_dry_run: bool) -> None:

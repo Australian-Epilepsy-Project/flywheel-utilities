@@ -7,11 +7,9 @@ import os
 from math import floor
 from typing import Optional, Tuple, Union
 
-import psutil  # type: ignore
+import psutil
 
 log = logging.getLogger(__name__)
-
-# pylint: disable=logging-fstring-interpolation
 
 
 def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:

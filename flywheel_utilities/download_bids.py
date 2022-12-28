@@ -12,19 +12,17 @@ from typing import TYPE_CHECKING, List, Optional
 if TYPE_CHECKING:
     from flywheel.models.container_acquisition_output import (
         ContainerAcquisitionOutput,
-    )  # type: ignore
+    )
     from flywheel.models.container_subject_output import (
         ContainerSubjectOutput,
-    )  # type: ignore
-    from flywheel.models.file_entry import FileEntry  # type: ignore
+    )
+    from flywheel.models.file_entry import FileEntry
 
 log = logging.getLogger(__name__)
 
-# pylint: disable=logging-fstring-interpolation
+
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-return-statements
-
-
 def populate_intended_for(fw_file: "FileEntry", sidecar: Path) -> None:
     """
     The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this information is

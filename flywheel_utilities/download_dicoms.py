@@ -2,25 +2,21 @@
 Module for downloading data from flywheel
 """
 
-# pylint: disable=import-error
-# pylint: disable=wrong-import-order
-# pylint: disable=wrong-import-position
 import logging
 import re
 from pathlib import Path
 from typing import TYPE_CHECKING, List
 
-from flywheel_gear_toolkit.utils.zip_tools import unzip_archive  # type: ignore
-
-# Enable explicit type hints with mypy
-if TYPE_CHECKING:
-    from flywheel.models.container_subject_output import ContainerSubjectOutput  # type: ignore
+from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
 from flywheel_utilities import download_bids
 
-log = logging.getLogger(__name__)
+# Enable explicit type hints with mypy
+if TYPE_CHECKING:
+    from flywheel.models.container_subject_output import ContainerSubjectOutput
 
-# pylint: disable=logging-fstring-interpolation
+
+log = logging.getLogger(__name__)
 
 
 def dicom_unzip_name(name: str) -> str:

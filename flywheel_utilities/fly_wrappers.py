@@ -7,23 +7,19 @@ Simple wrappers to use Flywheel.
 import logging
 import sys
 
-# pylint: disable=wrong-import-order
 from typing import TYPE_CHECKING
 
-# pylint: disable=import-error
-import flywheel  # type: ignore
+import flywheel
 
 # Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import (
         ContainerSubjectOutput,
-    )  # type: ignore
-    from flywheel_geartoolkit_context import GearToolkitContext  # type: ignore
+    )
+    from flywheel_geartoolkit_context import GearToolkitContext
 
 
 log = logging.getLogger(__name__)
-
-# pylint: disable=logging-fstring-interpolation
 
 
 def get_subject(context: "GearToolkitContext") -> "ContainerSubjectOutput":
