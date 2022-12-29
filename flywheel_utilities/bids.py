@@ -48,7 +48,7 @@ def add_dataset_description(bids_dir: Path) -> None:
         with open(description, "w", encoding="utf-8") as data_description:
             json.dump(info, data_description, indent=4)
 
-        log.info("Dummy dataset_description.json created in root bids directory")
+        log.info("Dummy dataset_description.json created in root bids directory"
 
     # Create dummy README
     readme = bids_dir / "README"
