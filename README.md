@@ -167,4 +167,4 @@ freesurfer.install_freesurfer_license(context)
 # Development and contributions
 
 Flywheel-utilities is a new package under active development, and as such may change rapidly.
-Contributions are very welcome! 
+Contributions are very welcome! See [Contributing.md](./CONTRIBUTING.md) for details.
