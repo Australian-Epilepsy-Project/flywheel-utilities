@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1 (2022-12-30)
+
+Bug fix release
+
+### Fixed
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/20: fixes a bug where the recently added
+  post_populate function only worked for subjects without any sessions in the BIDS path. 
+
 ## 0.4.0 (2022-12-23)
 
 Enhancement release
