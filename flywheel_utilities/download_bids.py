@@ -83,8 +83,8 @@ def post_populate_intended_for(dir_sub: Path, post_populate) -> None:
         for one_dir in dirs:
             if one_dir.name in post_populate:
                 for one_file in one_dir.glob("*.nii*"):
-                    log.debug(f"Located {one_file.relative_to(one_dir.parent)}")
-                    intended_for.append(one_file.relative_to(one_dir.parent).name)
+                    log.debug(f"Located {one_file.relative_to(one_dir.parent.parent)}")
+                    intended_for.append(one_file.relative_to(one_dir.parent.parent).as_posix())
 
         if not intended_for:
             log.warning("Filtered IntendedFor field empty")
