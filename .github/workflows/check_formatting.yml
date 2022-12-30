@@ -1,4 +1,4 @@
-name: Pylint
+name: check_formatting
 
 on:
   pull_request:
