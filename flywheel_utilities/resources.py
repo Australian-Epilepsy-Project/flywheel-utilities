@@ -12,9 +12,12 @@ import psutil
 log = logging.getLogger(__name__)
 
 
-def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
+def determine_n_cpus(
+    n_cpus: Optional[int] = None, omp_threads: Optional[int] = None
+) -> Tuple[int, int]:
     """
     Provide the desired number of cpus and threads, and have maximum number allowed returned.
+    If not arguments are provided, the maximum available will be returned.
 
     Args:
         n_cpus: number of threads across all processes
@@ -55,9 +58,10 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
     return n_cpus, omp_threads
 
 
-def determine_max_mem(mem_mb: Union[int, float]) -> float:
+def determine_max_mem(mem_mb: Optional[Union[int, float]] = None) -> float:
     """
-    Provide the desired amount of memory and have the maximum allowed memory usage returned.
+    Provide the desired amount of memory and have the maximum allowed memory usage returned,
+    or provide no argument and have 1GiB less than available returned.
 
     Args:
         mem_mb: requested memory allocation in GiB
