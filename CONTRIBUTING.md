@@ -13,7 +13,7 @@ Before committing your code, check that it will pass the automated CI tests.
 To run the tests locally before committing,
 run the following commands from the root of this repository and ensure all tests pass:
 ```
-  $ pytest -v tests
+  $ pytest
   $ ./check_formatting.sh
 ```
 The tests you will require packages listed in the `requirements_dev.txt` file.
