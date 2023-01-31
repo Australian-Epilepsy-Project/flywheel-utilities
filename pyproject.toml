@@ -43,3 +43,4 @@ addopts = "--cov-report term-missing --cov flywheel_utilities tests"
 
 [tool.coverage.report]
 exclude_lines = ["if TYPE_CHECKING:"]
+omit = ["*/basic_logging.py"]
