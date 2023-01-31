@@ -44,3 +44,18 @@ class Client:
             return {"info": {"FREESURFER_LICENSE": "insert_license"}}
 
         return {"info": {}}
+
+    def add_subject_tag(self, sub_id, gear_name):
+        """Mock tag"""
+        return None
+
+
+class Subject:
+    """Dummy subject docstring"""
+
+    def __init__(self, has_tags=True):
+        if has_tags:
+            self.tags = ['megre2swi:1.1.1', 'dwi2adc']
+        else:
+            self.tags = None
+        self.id = "1234567890"

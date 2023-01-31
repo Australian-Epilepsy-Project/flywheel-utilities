@@ -35,7 +35,7 @@ def update_subject_tags(context: "GearToolkitContext", subject: "ContainerSubjec
 
         try:
             context.client.add_subject_tag(subject.id, gear_name)
-        except flywheel.rest.ApiException as err:
+        except flywheel.rest.ApiException as err:  # pragma: no cover
             log.error(f"{err}")
             sys.exit(1)
 

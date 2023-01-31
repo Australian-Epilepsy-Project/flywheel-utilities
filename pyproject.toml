@@ -42,5 +42,5 @@ testpaths = ["tests"]
 addopts = "--cov-report term-missing --cov flywheel_utilities tests"
 
 [tool.coverage.report]
-exclude_lines = ["if TYPE_CHECKING:"]
+exclude_lines = ["if TYPE_CHECKING:", "# pragma: no cover"]
 omit = ["*/basic_logging.py"]
