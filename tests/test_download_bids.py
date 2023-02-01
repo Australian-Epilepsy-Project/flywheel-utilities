@@ -199,6 +199,23 @@ def test_is_bidsified_success(caplog):
 
 
 def test_is_bidsified_missing_folder(caplog):
+    """Test missing folder"""
+
+    # Mock scan
+    mock_scan = {"info": {"BIDS": {"ignore": False}}}
+
+    Acq = namedtuple("acq", "label")
+
+    acq = Acq("mock_label")
+
+    with caplog.at_level(logging.DEBUG):
+        ret = download_bids.is_bidsified(mock_scan, acq)
+
+    assert ret is False
+    assert caplog.messages[0] == "Not properly BIDSified data: mock_label"
+
+
+def test_is_bidsified_missing_folder_name(caplog):
     """Test missing folder name"""
 
     # Mock scan
@@ -213,6 +230,24 @@ def test_is_bidsified_missing_folder(caplog):
 
     assert ret is False
     assert caplog.messages[0] == "Not properly BIDSified data: mock_label"
+
+
+def test_is_bidsified_missing_folder_name_err_message(caplog):
+    """Test missing folder name with error message"""
+
+    # Mock scan
+    mock_scan = {"info": {"BIDS": {"Folder": "", "ignore": False, "error_message": "fail"}}}
+
+    Acq = namedtuple("acq", "label")
+
+    acq = Acq("mock_label")
+
+    with caplog.at_level(logging.DEBUG):
+        ret = download_bids.is_bidsified(mock_scan, acq)
+
+    assert ret is False
+    assert caplog.messages[0] == "Not properly BIDSified data: mock_label"
+    assert caplog.messages[1] == "BIDS error message: fail"
 
 
 def test_is_bidsified_sourcedata(caplog):
