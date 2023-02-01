@@ -3,7 +3,6 @@ Test for bids.py
 """
 
 from flywheel_utilities import bids
-
 from tests.mock_classes import Context
 
 
@@ -34,7 +33,7 @@ def test_add_dataset_description(tmp_path):
 
 
 def test_create_deriv_dir(tmp_path):
-    """Test create_deriv_dir"""
+    """Test all variants of create_deriv_dir"""
 
     gear_name = "testing-gear"
     gear_version = "3.14.2_0.11.0"
@@ -42,20 +41,26 @@ def test_create_deriv_dir(tmp_path):
     second_ver = gear_version[gear_version.find("_") + 1 :]
     label = "101101"
 
-    context = Context(
-        working_dir=tmp_path, gear_name=gear_name, gear_version=gear_version
-    )
+    context = Context(working_dir=tmp_path, gear_name=gear_name, gear_version=gear_version)
 
     # Use first version for dir creation
     bids.create_deriv_dir(context, label, "first")
 
-    assert (
-        tmp_path / (gear_name + "-v" + first_ver + "/sub-" + label)
-    ).exists() is True
+    assert (tmp_path / (gear_name + "-v" + first_ver + "/sub-" + label)).exists() is True
 
     # Use second version for dir creation
     bids.create_deriv_dir(context, label, "second")
 
-    assert (
-        tmp_path / (gear_name + "-v" + second_ver + "/sub-" + label)
-    ).exists() is True
+    assert (tmp_path / (gear_name + "-v" + second_ver + "/sub-" + label)).exists() is True
+
+    # Use single version for dir creation
+    context.gear_version = "3.14.2"
+    bids.create_deriv_dir(context, label, "single")
+
+    assert (tmp_path / (gear_name + "-v" + context.gear_version + "/sub-" + label)).exists() is True
+
+    # Use "none" to find version
+    context.gear_version = "3.14.2"
+    bids.create_deriv_dir(context, label, "none")
+
+    assert (tmp_path / (gear_name + "-v" + context.gear_version + "/sub-" + label)).exists() is True

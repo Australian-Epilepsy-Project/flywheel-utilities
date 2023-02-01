@@ -1,5 +1,5 @@
 """
-Very basic mock context class
+Very basic mocks for Flywheel's Context, Client, Subject and Session classes
 """
 
 from pathlib import Path
@@ -45,7 +45,7 @@ class Client:
 
         return {"info": {}}
 
-    def add_subject_tag(self, sub_id, gear_name):
+    def add_subject_tag(self, sub_id, gear_name):  # pylint: disable=unused-argument
         """Mock tag"""
         return None
 
@@ -55,7 +55,15 @@ class Subject:
 
     def __init__(self, has_tags=True):
         if has_tags:
-            self.tags = ['megre2swi:1.1.1', 'dwi2adc']
+            self.tags = ["megre2swi:1.1.1", "dwi2adc"]
         else:
             self.tags = None
-        self.id = "1234567890"
+        self.id = "1234567890"  # pylint: disable=invalid-name
+        self.label = "sub-101101"
+
+
+class Session:
+    """Dummy session docstring"""
+
+    def __init__(self):
+        self.label = "ses-01"
