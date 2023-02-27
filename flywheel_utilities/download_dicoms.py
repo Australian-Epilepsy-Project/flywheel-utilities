@@ -66,6 +66,8 @@ def download_specific_dicoms(
 
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
+            if acq.info['BIDS']['ignore'] is True:
+                continue
             # Loop over files, search for the NIfTIs that were used in the
             # analysis, then download the DICOMs found in the same container
             download = False
@@ -147,6 +149,8 @@ def download_all_dicoms(
     # Track number of downloads
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
+            if acq.info['BIDS']['ignore'] is True:
+                continue
             # Loop over files, search for the NIfTIs that were used in the
             # analysis, then download the DICOMs housed in the same contained
             for scan in acq.reload().files:
