@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2023-02-27)
+
+Minor release update
+
+### Changed
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/21: check at the container level whether or not the BIDS.ignore field has been checked. If so, ignore contents of containing when searching for either BIDS files or DICOMS
+
 ## 0.4.1 (2022-12-30)
 
 Bug fix release
