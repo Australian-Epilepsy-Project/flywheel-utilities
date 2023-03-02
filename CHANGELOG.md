@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2023-03-02)
+
+Minor bug fix release
+
+### Fixed
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/22: check the container has the BIDS information field before checking for the ignore field.
+
 ## 0.5.0 (2023-02-27)
 
 Minor release update
