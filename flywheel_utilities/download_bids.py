@@ -181,8 +181,12 @@ def download_bids_modalities(
     for session in subject.sessions.iter():
         log.info(f"--- Searching through session:  {session.label} ---")
         for acq in session.reload().acquisitions.iter():
-            if acq.info['BIDS']['ignore'] is True:
-                continue
+
+            # Check if ignore is set at acquisition level
+            if "BIDS" in acq.info:
+                if acq.info["BIDS"]["ignore"] is True:
+                    continue
+
             for scan in acq.reload().files:
 
                 if not is_bidsified(scan, acq):
@@ -247,8 +251,12 @@ def download_bids_files(
     for session in subject.sessions.iter():
         log.info(f"--- Searching through session:  {session.label} ---")
         for acq in session.reload().acquisitions.iter():
-            if acq.info['BIDS']['ignore'] is True:
-                continue
+
+            # Check if ignore is set at acquisition level
+            if "BIDS" in acq.info:
+                if acq.info["BIDS"]["ignore"] is True:
+                    continue
+
             for scan in acq.reload().files:
 
                 if not is_bidsified(scan, acq):
