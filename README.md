@@ -12,9 +12,9 @@ will search all of the subject's sessions to find the file. See Usage below for 
 
 ## Tested with
 
-  * Python == 3.9.13
-  * flywheel_gear_toolkit == 0.6.6
-  * flywheel_sdk == 16.8.16
+  * Python == 3.8.10
+  * flywheel_gear_toolkit == 0.6.8
+  * flywheel_sdk == 16.13.5
 
 ## Quick start
 
