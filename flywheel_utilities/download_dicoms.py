@@ -2,6 +2,8 @@
 Module for downloading data from flywheel
 """
 
+from __future__ import annotations
+
 import logging
 import re
 from pathlib import Path
@@ -37,14 +39,14 @@ def dicom_unzip_name(name: str) -> str:
 
 # pylint: disable=too-many-branches
 def download_specific_dicoms(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     filenames: List[str],
     work_dir: Path,
     is_dry_run: bool = False,
 ) -> List[Path]:
     """
     Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the
-    container containing the correct DICOM series.
+    container housing the DICOM series, then use the NIfTI filename to match to the correct DICOM.
 
     Args:
         subject: flywheel subject object
@@ -59,8 +61,8 @@ def download_specific_dicoms(
     log.info("Downloading specific DICOM series")
 
     # Track number of downloads
-    num_files = len(filenames)
-    num_downloads = 0
+    num_files: int = len(filenames)
+    num_downloads: int = 0
 
     orig_dicoms: List[Path] = []
 
@@ -74,7 +76,7 @@ def download_specific_dicoms(
 
             # Loop over files, search for the NIfTIs that were used in the
             # analysis, then download the DICOMs found in the same container
-            download = False
+            download: bool = False
             for scan in acq.reload().files:
 
                 if not download_bids.is_bidsified(scan, acq):
@@ -102,7 +104,7 @@ def download_specific_dicoms(
 
             for scan in acq.files:
                 if scan.type.lower() == "dicom":
-                    series_name = Path(scan.name)
+                    series_name: Path = Path(scan.name)
                     if not (work_dir / series_name).is_file():
                         scan.download(work_dir / series_name)
                     num_downloads += 1
@@ -130,7 +132,7 @@ def download_specific_dicoms(
 
 
 def download_all_dicoms(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     work_dir: Path,
     to_ignore: List[str],
     dicom_dir: Path,
@@ -168,7 +170,7 @@ def download_all_dicoms(
                     continue
 
                 # Filter DICOMS
-                to_download = True
+                to_download: bool = True
                 for ignore in to_ignore:
                     if ignore.lower() in scan.name.lower():
                         log.debug(f"Will not download: {scan.name}")
