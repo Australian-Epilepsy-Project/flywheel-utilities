@@ -163,27 +163,24 @@ def download_all_dicoms(
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
 
+            # Filter
+            skip_container: bool = False
+            for ignore in to_ignore:
+                if ignore.lower() in acq.label.lower():
+                    log.debug(f"Will not download: {acq.label}")
+                    skip_container = True
+            if skip_container:
+                continue
+
             # Check if ignore is set at acquisition level
             if "BIDS" in acq.info:
                 if acq.info["BIDS"]["ignore"] is True:
                     continue
 
-            # Loop over files, search for the NIfTIs that were used in the
-            # analysis, then download the DICOMs housed in the same contained
             for scan in acq.reload().files:
 
                 # Only interested in DICOMS
                 if not scan.type.lower() == "dicom":
-                    continue
-
-                # Filter DICOMS
-                to_download: bool = True
-                for ignore in to_ignore:
-                    if ignore.lower() in scan.name.lower():
-                        log.debug(f"Will not download: {scan.name}")
-                        to_download = False
-
-                if to_download is False:
                     continue
 
                 log.info(f"Found: {scan.name}")
