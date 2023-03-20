@@ -2,6 +2,8 @@
 Module for downloading data from flywheel
 """
 
+from __future__ import annotations
+
 import logging
 import re
 from pathlib import Path
@@ -11,7 +13,6 @@ from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
 from flywheel_utilities import download_bids
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import ContainerSubjectOutput
 
@@ -36,15 +37,18 @@ def dicom_unzip_name(name: str) -> str:
 
 
 # pylint: disable=too-many-branches
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-nested-blocks
 def download_specific_dicoms(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     filenames: List[str],
     work_dir: Path,
     is_dry_run: bool = False,
 ) -> List[Path]:
     """
-    Download a zipped DICOM series. Use the BIDsified file names for the NIfTI files to find the
-    container containing the correct DICOM series.
+    Download a zipped DICOM series. Use the BIDsified file names from the NIfTI file(s) to find the
+    container housing the DICOM series, then use SeriesNumber to find the correct DICOM in the
+    Flywheel container.
 
     Args:
         subject: flywheel subject object
@@ -59,8 +63,8 @@ def download_specific_dicoms(
     log.info("Downloading specific DICOM series")
 
     # Track number of downloads
-    num_files = len(filenames)
-    num_downloads = 0
+    num_files: int = len(filenames)
+    num_downloads: int = 0
 
     orig_dicoms: List[Path] = []
 
@@ -74,7 +78,7 @@ def download_specific_dicoms(
 
             # Loop over files, search for the NIfTIs that were used in the
             # analysis, then download the DICOMs found in the same container
-            download = False
+            download: bool = False
             for scan in acq.reload().files:
 
                 if not download_bids.is_bidsified(scan, acq):
@@ -86,6 +90,8 @@ def download_specific_dicoms(
                 for name in filenames:
                     if re.search(name, filename):
                         download = True
+                        # Extract series number to use as unique identifier
+                        series_number = scan.info['SeriesNumber']
                         break
                 else:
                     continue
@@ -100,18 +106,21 @@ def download_specific_dicoms(
             if download is not True:
                 continue
 
-            for scan in acq.files:
+            for scan in acq.reload().files:
                 if scan.type.lower() == "dicom":
-                    series_name = Path(scan.name)
-                    if not (work_dir / series_name).is_file():
-                        scan.download(work_dir / series_name)
-                    num_downloads += 1
-                    break
+                    # Extract scan information which will be used to match with correct DICOM
+                    if scan.info['SeriesNumber'] == series_number:
+                        series_name: Path = Path(scan.name)
+                        if not (work_dir / series_name).is_file():
+                            scan.download(work_dir / series_name)
+                        num_downloads += 1
+                        break
 
             # Unzip the file
             unzip_name: Path = work_dir / dicom_unzip_name(str(series_name))
-            if not series_name.is_dir():
+            if not series_name.is_dir() and is_dry_run is False:
                 unzip_archive(work_dir / series_name, unzip_name, is_dry_run)
+                log.debug(f" -> {unzip_name}")
 
             orig_dicoms.append(unzip_name)
 
@@ -130,7 +139,7 @@ def download_specific_dicoms(
 
 
 def download_all_dicoms(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     work_dir: Path,
     to_ignore: List[str],
     dicom_dir: Path,
@@ -168,7 +177,7 @@ def download_all_dicoms(
                     continue
 
                 # Filter DICOMS
-                to_download = True
+                to_download: bool = True
                 for ignore in to_ignore:
                     if ignore.lower() in scan.name.lower():
                         log.debug(f"Will not download: {scan.name}")
@@ -188,5 +197,5 @@ def download_all_dicoms(
 
                 # Unzip the file
                 unzip_dir = dicom_dir / unzip_name
-                if not unzip_dir.exists():
+                if not unzip_dir.exists() and is_dry_run is False:
                     unzip_archive(download_name, unzip_dir, is_dry_run)
