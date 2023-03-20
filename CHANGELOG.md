@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.0 (2023-03-20)
+
+Enhancement release, with some minor bug fixes
+
+### Enhancement
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/23: when trying to locate the DICOM series
+  that produced a specific BIDS file, now use the SeriesNumber to unambiguously locate the series, rather than the
+  filename, which can be fragile.
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/24: now filter DICOMS using the
+  acquisition.label on Flywheel rather than the filename itself. Should be much more robust. Also includes a bug fix
+  which adds a guard against trying to unzip a non-zip file.
+
 ## 0.5.0 (2023-03-02)
 
 Minor bug fix release
@@ -23,7 +37,7 @@ Bug fix release
 ### Fixed
 
 - https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/20: fixes a bug where the recently added
-  post_populate function only worked for subjects without any sessions in the BIDS path. 
+  post_populate function only worked for subjects without any sessions in the BIDS path.
 
 ## 0.4.0 (2022-12-23)
 
@@ -52,7 +66,7 @@ Bug fix release along with significant formatting changes to code base.
 
 ### Fixed
 
-- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/commit/f60e179a42636ff6386c299daea4aff4f8387d56: 
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/commit/f60e179a42636ff6386c299daea4aff4f8387d56:
 Populate the IntendedFor fields in the fmap sidecars. The IntendedFor information is stored as metadata, NOT in the json
 sidecar. This update sources this information and writes it into the downloaded sidecars.
 
@@ -64,7 +78,7 @@ sidecar. This update sources this information and writes it into the downloaded 
 
 ### Changed
 
-- Extend the allowable textwidth up to 120 (was 80). 
+- Extend the allowable textwidth up to 120 (was 80).
 
 ## 0.1.2 (2022-09-13)
 
