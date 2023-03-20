@@ -112,7 +112,7 @@ def download_specific_dicoms(
 
             # Unzip the file
             unzip_name: Path = work_dir / dicom_unzip_name(str(series_name))
-            if not series_name.is_dir():
+            if not series_name.is_dir() and is_dry_run is False:
                 unzip_archive(work_dir / series_name, unzip_name, is_dry_run)
 
             orig_dicoms.append(unzip_name)
@@ -190,5 +190,5 @@ def download_all_dicoms(
 
                 # Unzip the file
                 unzip_dir = dicom_dir / unzip_name
-                if not unzip_dir.exists():
+                if not unzip_dir.exists() and is_dry_run is False:
                     unzip_archive(download_name, unzip_dir, is_dry_run)
