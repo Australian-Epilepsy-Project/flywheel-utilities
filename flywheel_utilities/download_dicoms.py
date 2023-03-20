@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import logging
 import re
+import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, List
 
@@ -110,17 +111,21 @@ def download_specific_dicoms(
                 if scan.type.lower() == "dicom":
                     # Extract scan information which will be used to match with correct DICOM
                     if scan.info['SeriesNumber'] == series_number:
-                        series_name: Path = Path(scan.name)
-                        if not (work_dir / series_name).is_file():
-                            scan.download(work_dir / series_name)
+                        download_name = work_dir / scan.name
+                        if not download_name.is_file():
+                            scan.download(download_name)
                         num_downloads += 1
                         break
 
             # Unzip the file
-            unzip_name: Path = work_dir / dicom_unzip_name(str(series_name))
-            if not series_name.is_dir() and is_dry_run is False:
-                unzip_archive(work_dir / series_name, unzip_name, is_dry_run)
-                log.debug(f" -> {unzip_name}")
+            unzip_name: Path = work_dir / dicom_unzip_name(scan.name)
+            if download_name.suffix == ".zip":
+                if not download_name.is_dir() and is_dry_run is False:
+                    unzip_archive(download_name, unzip_name, is_dry_run)
+                    log.debug(f" -> {unzip_name}")
+            else:
+                # Copy already unzipped file so it has standardised naming
+                shutil.copytree(download_name, unzip_name)
 
             orig_dicoms.append(unzip_name)
 
@@ -193,6 +198,11 @@ def download_all_dicoms(
                 unzip_name: str = dicom_unzip_name(scan.name)
 
                 # Unzip the file
-                unzip_dir = dicom_dir / unzip_name
-                if not unzip_dir.exists() and is_dry_run is False:
-                    unzip_archive(download_name, unzip_dir, is_dry_run)
+                unzip_dir: Path = dicom_dir / unzip_name
+                if download_name.suffix == ".zip":
+                    if not unzip_dir.exists() and is_dry_run is False:
+                        unzip_archive(download_name, unzip_dir, is_dry_run)
+                        log.debug(f" -> {unzip_name}")
+                else:
+                    # Move already unzipped DICOM series to dicom_dir
+                    shutil.copytree(download_name, unzip_dir)
