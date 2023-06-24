@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
   "flywheel==0.5.4",
   "flywheel_gear_toolkit==0.6.10",
+  "psutil==5.9.4",
 ]
 dynamic = ["version"]
 
@@ -33,6 +34,7 @@ dev = [
     "codespell",
     "pre-commit",
 ]
+
 [project.urls]
 Homepage = "https://github.com/Australian-Epilepsy-Project/flywheel-utilities"
 
