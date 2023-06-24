@@ -53,7 +53,7 @@ def check_run_level(
 
     try:
         destination = context.client.get(context.destination["id"])
-    except flywheel.ApiException as err:
+    except flywheel.ApiException as err:  # pylint: disable=maybe-no-member
         log.error("The destination id does not point to a valid analysis container")
         log.error(f"{err}")
         sys.exit(1)

@@ -44,7 +44,6 @@ def add_dataset_description(bids_dir: Path) -> None:
     description = bids_dir / "dataset_description.json"
 
     if not description.is_file():
-
         with open(description, "w", encoding="utf-8") as data_description:
             json.dump(info, data_description, indent=4)
 

@@ -57,7 +57,7 @@ def populate_intended_for(fw_file: "FileEntry", sidecar: Path) -> None:
         json.dump(json_decoded, out_json, sort_keys=True, indent=2)
 
 
-def post_populate_intended_for(dir_sub: Path, post_populate) -> None:
+def post_populate_intended_for(dir_sub: Path, post_populate: List[str]) -> None:
     """
     The json sidecars stored on Flywheel do not have the IntendedFor field populated.
     Instead, this information is found in the metadata. By default the IntendedFor fields with be
@@ -110,7 +110,7 @@ def is_bidsified(scan: "FileEntry", acq: "ContainerAcquisitionOutput") -> bool:
 
     Args:
         scan: single scan from acquisition container
-        acq: acquisition containining scan
+        acq: acquisition containing scan
     Returns:
         (bool): download file?
     """
@@ -152,7 +152,7 @@ def download_bids_modalities(
     modalities: List[str],
     bids_dir: Path,
     is_dry_run: bool,
-    post_populate: Optional[List] = None,
+    post_populate: Optional[List[str]] = None,
 ) -> None:
     """
     Download required files by looping through all sessions, acquisitions and analyses to find
@@ -181,14 +181,12 @@ def download_bids_modalities(
     for session in subject.sessions.iter():
         log.info(f"--- Searching through session:  {session.label} ---")
         for acq in session.reload().acquisitions.iter():
-
             # Check if ignore is set at acquisition level
             if "BIDS" in acq.info:
                 if acq.info["BIDS"]["ignore"] is True:
                     continue
 
             for scan in acq.reload().files:
-
                 if not is_bidsified(scan, acq):
                     continue
 
@@ -226,7 +224,6 @@ def download_bids_files(
     bids_dir: Path,
     is_dry_run: bool,
 ) -> None:
-
     """
     Download required files by looping through all sessions and acquisitions and analyses to find
     required files.
@@ -251,14 +248,12 @@ def download_bids_files(
     for session in subject.sessions.iter():
         log.info(f"--- Searching through session:  {session.label} ---")
         for acq in session.reload().acquisitions.iter():
-
             # Check if ignore is set at acquisition level
             if "BIDS" in acq.info:
                 if acq.info["BIDS"]["ignore"] is True:
                     continue
 
             for scan in acq.reload().files:
-
                 if not is_bidsified(scan, acq):
                     continue
 

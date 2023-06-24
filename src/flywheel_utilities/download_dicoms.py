@@ -71,7 +71,6 @@ def download_specific_dicoms(
 
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
-
             # Check if ignore is set at acquisition level
             if "BIDS" in acq.info:
                 if acq.info["BIDS"]["ignore"] is True:
@@ -81,7 +80,6 @@ def download_specific_dicoms(
             # analysis, then download the DICOMs found in the same container
             download: bool = False
             for scan in acq.reload().files:
-
                 if not download_bids.is_bidsified(scan, acq):
                     continue
 
@@ -92,7 +90,7 @@ def download_specific_dicoms(
                     if re.search(name, filename):
                         download = True
                         # Extract series number to use as unique identifier
-                        series_number = scan.info['SeriesNumber']
+                        series_number = scan.info["SeriesNumber"]
                         break
                 else:
                     continue
@@ -110,7 +108,7 @@ def download_specific_dicoms(
             for scan in acq.reload().files:
                 if scan.type.lower() == "dicom":
                     # Extract scan information which will be used to match with correct DICOM
-                    if scan.info['SeriesNumber'] == series_number:
+                    if scan.info["SeriesNumber"] == series_number:
                         download_name = work_dir / scan.name
                         if not download_name.is_file():
                             scan.download(download_name)
@@ -167,7 +165,6 @@ def download_all_dicoms(
     # Track number of downloads
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
-
             # Filter
             skip_container: bool = False
             for ignore in to_ignore:
@@ -183,7 +180,6 @@ def download_all_dicoms(
                     continue
 
             for scan in acq.reload().files:
-
                 # Only interested in DICOMS
                 if not scan.type.lower() == "dicom":
                     continue
