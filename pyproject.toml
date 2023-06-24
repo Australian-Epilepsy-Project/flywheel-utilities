@@ -30,6 +30,8 @@ dev = [
     "isort",
     "mypy",
     "pylint",
+    "codespell",
+    "pre-commit",
 ]
 [project.urls]
 Homepage = "https://github.com/Australian-Epilepsy-Project/flywheel-utilities"
