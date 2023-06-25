@@ -1,11 +1,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 # flywheel-utilites
 
-## What is flywheel-utilies?
+## What is flywheel-utilities?
 
-flywheel-utilities is a Python package to help interface with the Flywheel ecosystem.
-While many of the modules are simply quality of life improvements (e.g., fly_wrappers.py and utils.py),
-many of the modules (e.g., bids.py, download_X.py) were designed to help analyses being performed at the subject level,
+`flywheel-utilities` is a Python package to help interface with the Flywheel ecosystem.
+While many of the modules are simply quality of life improvements (e.g., `fly_wrappers.py` and `utils.py`),
+many of the modules (e.g., `bids.py`, `download_X.py`) were designed to help analyses being performed at the subject level,
 including cases where the subject may have had what should be considered a single session split into multiple sessions.
 For example, when searching for a subject's T1-weighted image, the function `download_specific_bids`,
 will search all of the subject's sessions to find the file. See Usage below for examples.
@@ -18,7 +18,7 @@ will search all of the subject's sessions to find the file. See Usage below for 
 
 ## Quick start
 
-flywheel-utilities can be installed using pip. To install locally, execute the following command from this directory:
+`flywheel-utilities` can be installed using pip. To install locally, execute the following command from this directory:
 
 `python3 -m pip install .`
 
@@ -26,13 +26,14 @@ To install during a docker build, include the following in the Dockerfile with <
 ```
 RUN git clone https://github.com/Australian-Epilepsy-Project/flywheel-utilities.git -b <TAG> flywheel-utilities && \
     cd flywheel-utilities && \
-    pip3 install . && \
+    python3 -m pip install . && \
     rm -rf flywheel-utilities
 ```
 
-## Usage 
+## Usage
 
-The following usage examples require the gear_toolkit_context object to be initialised. See [here](https://flywheel-io.gitlab.io/public/gear-toolkit/flywheel_gear_toolkit/context/) for an introduction.  
+The following usage examples require the `gear_toolkit_context` object to be initialised.
+See [here](https://flywheel-io.gitlab.io/public/gear-toolkit/flywheel_gear_toolkit/context/) for an introduction.
 
 ### Basic usage
 
@@ -143,11 +144,11 @@ the working directory (defined in the context), and will be unzipped beforehand 
   download_attachments.download_attachment(context, attachment_name, is_dry_run=False)
 ```
 
-### Installing Freesurfer license 
+### Installing Freesurfer license
 
 Install the Freesurfer license to $FREESURFER_HOME.
 This assumes the Freesurfer license information is stored at the project level in "Custom Information" as string with
-the key set to "FREESURFERLICENSE" and the value set to the contents of lisence.txt.
+the key set to "FREESURFER_LICENSE" and the value set to the contents of `licence.txt`.
 
 ```
 from flywheel_utilities import freesurfer
@@ -157,11 +158,11 @@ freesurfer.install_freesurfer_license(context)
 
 ### Additional modules
 
-- `basic_logging.setup_basic_logging(context)`  
+- `basic_logging.setup_basic_logging(context)`
       - reduce overhead when setting up basic logging
-- `metadata.update_subjects_tags(context, subject)`  
+- `metadata.update_subjects_tags(context, subject)`
       - update a subject's tags with the name and version of the successfully completed gear
-- `resource.determine_n_cpus(re_cpus, req_omp)` and `resource.determine_max_mem(req_mem)`  
+- `resource.determine_n_cpus(re_cpus, req_omp)` and `resource.determine_max_mem(req_mem)`
       - determine number of available CPUs and memory (e.g., for fMRIPrep)
 
 # Development and contributions

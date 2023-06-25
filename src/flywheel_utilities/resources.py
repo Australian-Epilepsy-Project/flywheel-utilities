@@ -16,12 +16,19 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
     """
     Provide the desired number of cpus and threads, and have maximum number allowed returned.
 
-    Args:
-        n_cpus: number of threads across all processes
-        omp_threads: number of threads per process
-    Returns:
-        n_cpus: number of threads across all processes
-        omp_threads: number of threads per process
+    Parameters
+    ----------
+    n_cpus:
+        number of threads across all processes
+    omp_threads:
+        number of threads per process
+
+    Returns
+    -------
+    n_cpus:
+        allocated number of threads across all processes
+    omp_threads:
+        allocated number of threads per process
     """
 
     avail_cpus: Optional[int] = os.cpu_count()
@@ -59,14 +66,19 @@ def determine_max_mem(mem_mb: Union[int, float]) -> float:
     """
     Provide the desired amount of memory and have the maximum allowed memory usage returned.
 
-    Args:
-        mem_mb: requested memory allocation in GiB
-    Returns:
-        mem_mb: allocated memory (in GiB)
+    Parameters
+    ----------
+    mem_mb:
+        requested memory allocation in GiB
+
+    Returns
+    -------
+    mem_mb:
+        allocated memory (in GiB)
     """
 
-    mem_total = psutil.virtual_memory().total / (1024**3)
-    mem_avail = psutil.virtual_memory().available / (1024**3)
+    mem_total: float = psutil.virtual_memory().total / (1024**3)
+    mem_avail: float = psutil.virtual_memory().available / (1024**3)
 
     log.info(f"Systems memory: {int(mem_total)} GiB")
     log.info(f"Available memory: {int(mem_avail)} GiB")

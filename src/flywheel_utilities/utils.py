@@ -2,9 +2,9 @@
 General functions.
 """
 
-import logging
+from __future__ import annotations
 
-# Enable explicit type hints with mypy
+import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,14 +14,19 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-def get_gear_name(context: "GearToolkitContext") -> str:
+def get_gear_name(context: GearToolkitContext) -> str:
     """
     Get gear name and version.
 
-    Args:
-        context: flywheel gear context object
-    Returns:
-        gear_name: <gear_name>:<version>
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+
+    Returns
+    -------
+    gear_name:
+        <gear_name>:<version>
     """
 
     gear_name: str = context.manifest["label"]
@@ -35,10 +40,18 @@ def zip_save_name(identifier: str, sub_label: str, dest_id: str) -> str:
     """
     Construct name of output zip file
 
-    Args:
-        identifier: base save name
-        sub_label: subject label <sub-XXXXXX>
-        dest_id: analysis destination ID
+    Parameters
+    ----------
+    identifier:
+        base save name
+    sub_label:
+        subject label <sub-XXXXXX>
+    dest_id:
+        analysis destination ID
+
+    Returns
+    -------
+        save name for zip file
     """
 
     save_name = identifier + "_"

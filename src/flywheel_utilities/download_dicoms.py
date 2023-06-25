@@ -25,13 +25,17 @@ def dicom_unzip_name(name: str) -> str:
     """
     Construct name for unzipped DICOM series from label on Flywheel. Remove spaces and .zip.
 
-    Args:
-        name: filename
-    Returns:
-        clean_name: filename
+    Parameters
+    ----------
+    name:
+        filename
+
+    Returns
+    -------
+        clean file name
     """
 
-    clean_name = name.replace(".dicom", "")
+    clean_name: str = name.replace(".dicom", "")
     clean_name = clean_name.replace(".zip", "")
     clean_name = clean_name.replace(" ", "_")
     return clean_name.replace("_-_", "-")
@@ -51,13 +55,20 @@ def download_specific_dicoms(
     container housing the DICOM series, then use SeriesNumber to find the correct DICOM in the
     Flywheel container.
 
-    Args:
-        subject: flywheel subject object
-        filenames: list of BIDsified file names
-        work_dir: path to working directory
-        is_dry_run: download results?
-    Returns:
-        orig_dicoms: path to unzipped DICOMs
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    filenames:
+        list of BIDsified file names
+    work_dir:
+        Path to working directory
+    is_dry_run:
+        download results?
+
+    Returns
+    -------
+        list of Paths to unzipped DICOMs
     """
 
     log.info("--------------------------------------------")
@@ -71,7 +82,6 @@ def download_specific_dicoms(
 
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
-
             # Check if ignore is set at acquisition level
             if "BIDS" in acq.info:
                 if acq.info["BIDS"]["ignore"] is True:
@@ -81,7 +91,6 @@ def download_specific_dicoms(
             # analysis, then download the DICOMs found in the same container
             download: bool = False
             for scan in acq.reload().files:
-
                 if not download_bids.is_bidsified(scan, acq):
                     continue
 
@@ -92,7 +101,7 @@ def download_specific_dicoms(
                     if re.search(name, filename):
                         download = True
                         # Extract series number to use as unique identifier
-                        series_number = scan.info['SeriesNumber']
+                        series_number = scan.info["SeriesNumber"]
                         break
                 else:
                     continue
@@ -110,7 +119,7 @@ def download_specific_dicoms(
             for scan in acq.reload().files:
                 if scan.type.lower() == "dicom":
                     # Extract scan information which will be used to match with correct DICOM
-                    if scan.info['SeriesNumber'] == series_number:
+                    if scan.info["SeriesNumber"] == series_number:
                         download_name = work_dir / scan.name
                         if not download_name.is_file():
                             scan.download(download_name)
@@ -153,12 +162,18 @@ def download_all_dicoms(
     """
     Download all DICOM series for a subject with the option to filter using to_ignore.
 
-    Args:
-        subject: flywheel subject object
-        work_dir: path to working directory for download
-        to_ignore: list of strings used to reject DICOMS for download
-        dicom_dir: directory to extract DICOM series to
-        is_dry_run: download results?
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    work_dir:
+        Path to working directory for download
+    to_ignore:
+        list of strings used to reject DICOMS for download
+    dicom_dir:
+        directory to extract DICOM series to
+    is_dry_run:
+        download results?
     """
 
     log.info("--------------------------------------------")
@@ -167,7 +182,6 @@ def download_all_dicoms(
     # Track number of downloads
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
-
             # Filter
             skip_container: bool = False
             for ignore in to_ignore:
@@ -183,7 +197,6 @@ def download_all_dicoms(
                     continue
 
             for scan in acq.reload().files:
-
                 # Only interested in DICOMS
                 if not scan.type.lower() == "dicom":
                     continue
