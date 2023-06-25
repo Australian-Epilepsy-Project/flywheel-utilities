@@ -12,11 +12,10 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from flywheel_utilities import utils
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel_geartoolkit_context import GearToolkitContext
@@ -36,7 +35,7 @@ def add_dataset_description(bids_dir: Path) -> None:
     """
 
     # Dummy dataset description
-    info = {
+    info: Dict[str, Any] = {
         "Acknowledgements": "",
         "Authors": ["dummy", "authors"],
         "BIDSVersion": "1.2.0",
@@ -49,7 +48,7 @@ def add_dataset_description(bids_dir: Path) -> None:
         "template": "project",
     }
 
-    description = bids_dir / "dataset_description.json"
+    description: Path = bids_dir / "dataset_description.json"
 
     if not description.is_file():
         with open(description, "w", encoding="utf-8") as data_description:
@@ -58,7 +57,7 @@ def add_dataset_description(bids_dir: Path) -> None:
         log.info("Dummy dataset_description.json created in root bids directory")
 
     # Create dummy README
-    readme = bids_dir / "README"
+    readme: Path = bids_dir / "README"
 
     with open(readme, "w", encoding="utf-8") as read_me:
         # Write some dummy lines so BIDS doesn't complain that it is too short
@@ -96,7 +95,7 @@ def create_bids_dir(
     log.info("Creating bids directory structure...")
 
     # Determine number of sessions
-    num_sessions = len(subject.sessions())
+    num_sessions: int = len(subject.sessions())
     log.info(f"Subject contains {num_sessions} sessions")
 
     sub_path: Path = context.work_dir / "bids" / ("sub-" + subject.label)
@@ -151,10 +150,10 @@ def create_deriv_dir(
         elif which_version == "single":
             search = r"([0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})"
 
-        result = re.search(search, gear_name)
+        result: Optional[re.Match[str]] = re.search(search, gear_name)
         assert result is not None, (
-            "Could not isolate Flywheel versioning in gear name when"
-            " trying to strip it for BIDs derivative directory"
+            "Could not isolate Flywheel versioning in gear name when "
+            "trying to strip it for BIDs derivative directory"
             f"Retrieved gear name: {gear_name}"
         )
 

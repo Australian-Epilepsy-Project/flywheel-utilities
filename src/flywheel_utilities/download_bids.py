@@ -10,7 +10,6 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_acquisition_output import ContainerAcquisitionOutput
     from flywheel.models.container_subject_output import ContainerSubjectOutput
@@ -81,14 +80,14 @@ def post_populate_intended_for(dir_sub: Path, post_populate: List[str]) -> None:
     """
 
     log.info(f"Post populating fmap IntendedFor fields with all files from: {post_populate}")
-    sessions = list(dir_sub.glob("ses-*"))
+    sessions: List[Path] = list(dir_sub.glob("ses-*"))
     if not sessions:
         sessions = [dir_sub]
 
     for sesh in sessions:
-        intended_for = []
+        intended_for: List[str] = []
         # Get dir containing all modalities (could be session or subject)
-        dirs = [x for x in sesh.glob("*") if x.is_dir() and "fmap" not in x.name]
+        dirs: List[Path] = [x for x in sesh.glob("*") if x.is_dir() and "fmap" not in x.name]
         for one_dir in dirs:
             if one_dir.name in post_populate:
                 for one_file in one_dir.glob("*.nii*"):
@@ -193,7 +192,7 @@ def download_bids_modalities(
         log.info(f"Attempting to download modalities: {modalities}...")
 
     # Determine if multiple sessions
-    num_sessions = len(subject.sessions())
+    num_sessions: int = len(subject.sessions())
 
     log.info(f"Found {num_sessions} sessions")
 

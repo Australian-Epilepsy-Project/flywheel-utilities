@@ -6,8 +6,6 @@ from __future__ import annotations
 
 import logging
 import sys
-
-# Enable explicit type hints with mypy
 from typing import TYPE_CHECKING
 
 import flywheel

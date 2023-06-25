@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING
 
 import flywheel
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel_geartoolkit_context import GearToolkitContext

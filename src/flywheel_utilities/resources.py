@@ -77,8 +77,8 @@ def determine_max_mem(mem_mb: Union[int, float]) -> float:
         allocated memory (in GiB)
     """
 
-    mem_total = psutil.virtual_memory().total / (1024**3)
-    mem_avail = psutil.virtual_memory().available / (1024**3)
+    mem_total: float = psutil.virtual_memory().total / (1024**3)
+    mem_avail: float = psutil.virtual_memory().available / (1024**3)
 
     log.info(f"Systems memory: {int(mem_total)} GiB")
     log.info(f"Available memory: {int(mem_avail)} GiB")

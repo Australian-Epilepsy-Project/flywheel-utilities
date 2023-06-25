@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING
 
 from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel_geartoolkit_context import GearToolkitContext
 

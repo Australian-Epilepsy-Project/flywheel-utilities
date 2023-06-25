@@ -8,7 +8,6 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel_geartoolkit_context import GearToolkitContext
 
@@ -34,7 +33,7 @@ def setup_basic_logging(
     # Setup basic logging
     if "gear-log-level" in context.config:
         if context.config["gear-log-level"] == "DEBUG":
-            log_level = logging.DEBUG
+            log_level: int = logging.DEBUG
         else:
             log_level = logging.INFO
     else:

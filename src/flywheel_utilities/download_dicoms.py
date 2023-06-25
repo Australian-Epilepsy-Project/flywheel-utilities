@@ -35,7 +35,7 @@ def dicom_unzip_name(name: str) -> str:
         clean file name
     """
 
-    clean_name = name.replace(".dicom", "")
+    clean_name: str = name.replace(".dicom", "")
     clean_name = clean_name.replace(".zip", "")
     clean_name = clean_name.replace(" ", "_")
     return clean_name.replace("_-_", "-")
