@@ -6,26 +6,16 @@ If you believe you've found a bug, please open a new Github Issue and provide as
 
 ## Code contributions
 
-Code contributions are very welcome. Code must not be committed directly to `main`. 
-Instead, create a new branch based on `main` and initiate a pull request.
+Code contributions are very welcome. Code must not be committed directly to `main`.
+Instead, either for the repository or create a new branch based on `dev` and initiate a pull request onto `dev`.
 
-Before committing your code, check that it will pass the automated CI tests.
-To run the tests locally before committing,
-run the following commands from the root of this repository and ensure all tests pass:
-```
-  $ pytest -v tests
-  $ ./check_formatting.sh
-```
-The tests you will require packages listed in the `requirements_dev.txt` file.
-
-
-## Coding conventions
-
-To ensure consistency across the code base, this project uses the following linters and formatters:
+Before committing your code, make sure `pre-commit` is installed (dev option).
+This will ensure the following linters/formatters are run over each commit.
 - pylint
 - mypy
 - isort
 - black
+- codespell
 
 The only significant deviation from the default settings is the accepted line width which is set at 100.
 To see all arguments passed to the above linters/formatters, see the tool sections in the `pyproject.toml` file.
