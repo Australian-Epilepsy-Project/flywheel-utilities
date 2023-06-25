@@ -2,6 +2,8 @@
 Module for downloading data from flywheel
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 from functools import reduce
@@ -26,12 +28,20 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
     """
     Unzip the downloaded results. Attempts to find the zipped folder name first, however if there
     are not nested folders, the unzip name is determined by stripping the zipped names of
-    everything after and inlcuding "_sub-".  Only unzips the file if not already present.
+    everything after and including "_sub-".  Only unzips the file if not already present.
 
-    Args:
-        zip_name: full path to zip file
-        work_dir: path to work directory
-        is_dry_run: is this a dry run?
+    Parameters
+    ----------
+    zip_name:
+        Path to zip file
+    work_dir:
+        Path to work directory
+    is_dry_run:
+        is this a dry run?
+
+    Returns
+    -------
+        exit code
     """
 
     # Get list of all files in the zip file
@@ -61,7 +71,7 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
 
 
 def download_previous_result(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     results: Dict[str, str],
     work_dir: Path,
     export_gear: bool = False,
@@ -72,15 +82,25 @@ def download_previous_result(
     One can specify if searching for processing results or export results via export_gear.
     Results will be downloaded to 'work_dir'.
 
-    Args:
-        subject: flywheel subject object
-        results_info: dict containing gear_name, filename and tag.
-                    - gear_name: with or without version
-                    - filename: used as regex to match output file
-                    - tag: used for simple is <tag> in tag search of job tags.
-        work_dir: path to work directory
-        export_gear: should export runs be included?
-        is_dry_run: is this a dry run?
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    results_info:
+        dict containing gear_name, filename and tag.
+            - gear_name: with or without version
+            - filename: used as regex to match output file
+            - tag: used for simple is <tag> in tag search of job tags.
+    work_dir:
+        Path to work directory
+    export_gear:
+        should export runs be included?
+    is_dry_run:
+        is this a dry run?
+
+    Returns
+    -------
+        exit code
     """
 
     gear_name = results["gear_name"]
@@ -100,7 +120,7 @@ def download_previous_result(
 
     analyses = list(filter(filter_completed, analyses))
 
-    # Check we still have analysis ouputs
+    # Check we still have analysis outputs
     if len(analyses) == 0:
         log.error(f"No successful {gear_name} runs were found!")
         return 1
@@ -115,7 +135,7 @@ def download_previous_result(
         log.debug(f"Using the tag '{tag}' to further filter results")
         analyses = list(filter(lambda filt: filter_tag(filt, tag), analyses))
 
-    # Check we still have analysis ouputs
+    # Check we still have analysis outputs
     if len(analyses) == 0:
         log.error(f"No successful {gear_name} runs survived tag filtering!")
         return 1
@@ -170,11 +190,16 @@ def download_specific_result(
     Download results using destination ID from previous gear run.
     Results will be downloaded into work_dir.
 
-    Args:
-        analysis:
-        filename: string used to find output file (substring matching)
-        work_dir: path to work directory
-        is_dry_run: is this a dry run?
+    Parameters
+    ----------
+    analysis:
+        analysis containing results to be downloaded
+    filename:
+        string used to find output file (substring matching)
+    work_dir:
+        Path to work directory
+    is_dry_run:
+        is this a dry run?
     """
 
     log.info("Scanning analysis output files for an output " f"containing '{filename}'")

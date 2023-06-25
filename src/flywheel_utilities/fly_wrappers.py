@@ -4,6 +4,8 @@ Simple wrappers to use Flywheel.
 - check_run_level()
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 from typing import TYPE_CHECKING
@@ -19,14 +21,18 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-def get_subject(context: "GearToolkitContext") -> "ContainerSubjectOutput":
+def get_subject(context: GearToolkitContext) -> ContainerSubjectOutput:
     """
     Retrieve flywheel subject object
 
-    Args:
-        context: gear context object
-    Returns:
-        subject: flywheel subject object
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+
+    Returns
+    -------
+        Flywheel subject object
     """
 
     destination = context.client.get(context.destination["id"])
@@ -38,17 +44,21 @@ def get_subject(context: "GearToolkitContext") -> "ContainerSubjectOutput":
 
 
 def check_run_level(
-    context: "GearToolkitContext", which_level: str, gear_type: str = "analysis"
+    context: GearToolkitContext, which_level: str, gear_type: str = "analysis"
 ) -> None:
     """
     Check at which level the gear is being run and cross check with the supplied which_level string.
     By default, the gear will also be checked that it is running at the analysis level.
     This can be overridden via the gear_type argument.
 
-    Args:
-        context: gear context object
-        which_level: which level should the gear be run at
-        gear_type: analysis or utility gear
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+    which_level:
+        which level should the gear be run at
+    gear_type:
+        analysis or utility gear
     """
 
     try:

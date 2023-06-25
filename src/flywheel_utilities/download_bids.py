@@ -2,6 +2,8 @@
 Module for downloading bids data from flywheel
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import re
@@ -19,13 +21,17 @@ log = logging.getLogger(__name__)
 
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-return-statements
-def populate_intended_for(fw_file: "FileEntry", sidecar: Path) -> None:
+def populate_intended_for(fw_file: FileEntry, sidecar: Path) -> None:
     """
     The json sidecars stored on Flywheel do not have the IntendedFor field populated. Instead, this
     information is found in the metadata.
-    Args:
-        fw_file: json sidecar file on Flywheel
-        sidecar: path to saved json sidecar
+
+    Parameters
+    ----------
+    fw_file:
+        json sidecar file on Flywheel
+    sidecar:
+        path to saved json sidecar
     """
 
     log.debug(f"Populating IntendedFor of: {sidecar}")
@@ -66,9 +72,12 @@ def post_populate_intended_for(dir_sub: Path, post_populate: List[str]) -> None:
     E.g., supplying ['dwi', 'func'] will result in the IntendedFor fields containing all NIfTI
     files from the dwi and func folder. This argument must be passed to `download_modalities`.
 
-    Args:
-        dir_sub: subject's BIDS directory
-        post_populate: populate IntendedFor fields with all files in the provided folders
+    Parameters
+    ----------
+    dir_sub:
+        subject's BIDS directory
+    post_populate:
+        list of folder used to find the files to populate the IntendedFor fields with
     """
 
     log.info(f"Post populating fmap IntendedFor fields with all files from: {post_populate}")
@@ -104,15 +113,20 @@ def post_populate_intended_for(dir_sub: Path, post_populate: List[str]) -> None:
                 json.dump(json_decoded, out_json, sort_keys=True, indent=2)
 
 
-def is_bidsified(scan: "FileEntry", acq: "ContainerAcquisitionOutput") -> bool:
+def is_bidsified(scan: FileEntry, acq: ContainerAcquisitionOutput) -> bool:
     """
     Check if scan has been properly BIDSified, or if "ignore" field has been checked.
 
-    Args:
-        scan: single scan from acquisition container
-        acq: acquisition containing scan
-    Returns:
-        (bool): download file?
+    Parameters
+    ----------
+    scan:
+        single scan from acquisition container
+    acq:
+        acquisition containing scan
+
+    Returns
+    -------
+        download file?
     """
 
     # Check for BIDS information
@@ -148,7 +162,7 @@ def is_bidsified(scan: "FileEntry", acq: "ContainerAcquisitionOutput") -> bool:
 
 
 def download_bids_modalities(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     modalities: List[str],
     bids_dir: Path,
     is_dry_run: bool,
@@ -158,12 +172,18 @@ def download_bids_modalities(
     Download required files by looping through all sessions, acquisitions and analyses to find
     required files.
 
-    Args:
-        subject: flywheel subject object
-        modalities: list of modalities to download
-        bids_dir: path to bids directory
-        dry_run: don't download if True
-        post_populate: list of modalities to populate the IntendedFor fields with
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    modalities:
+        list of modalities to download
+    bids_dir:
+        Path to bids directory
+    dry_run:
+        don't download if True
+    post_populate:
+        list of modalities to populate the IntendedFor fields with
     """
 
     # Data will not be downloaded if it is a dry run
@@ -219,7 +239,7 @@ def download_bids_modalities(
 
 
 def download_bids_files(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     filenames: List[str],
     bids_dir: Path,
     is_dry_run: bool,
@@ -228,11 +248,16 @@ def download_bids_files(
     Download required files by looping through all sessions and acquisitions and analyses to find
     required files.
 
-    Args:
-        subject: flywheel subject object
-        filenames: list of partial names to use as regex for downloading required files
-        bids_dir: path to bids directory
-        dry_run: don't download if True
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    filenames:
+        list of partial names to use as regex for downloading required files
+    bids_dir:
+        Path to bids directory
+    dry_run:
+        don't download if True
     """
 
     # Do not download if dry run

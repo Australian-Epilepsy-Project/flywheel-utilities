@@ -2,6 +2,8 @@
 Install the freesurfer licence
 """
 
+from __future__ import annotations
+
 import logging
 import os
 from pathlib import Path
@@ -14,14 +16,16 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-def install_freesurfer_license(context: "GearToolkitContext") -> None:
+def install_freesurfer_license(context: GearToolkitContext) -> None:
     """
     Install Freesurfer license in correct position in $FREESURFER_HOME.
     This assumes the Freesurfer license information is stored at the project level in the
     "Custom Information" section as a string.
 
-    Args:
-        context: gear context object
+    Parameters
+    ----------
+    context:
+        FLywheel gear context object
     """
 
     # Install path for license (at $FREESURFER_HOME)
@@ -47,8 +51,8 @@ def install_freesurfer_license(context: "GearToolkitContext") -> None:
         log.error("Freesurfer license information could not be located")
         log.error("Check the information is uploaded at the project level")
         log.error('Must be in "Custom Information" as a string with:')
-        log.error('\tthe key set to "FREESURFER_LICENSE"')
-        log.error("\tthe value set to the contents of license.txt")
+        log.error('\t the key set to "FREESURFER_LICENSE"')
+        log.error("\t the value set to the contents of license.txt")
 
         raise FileNotFoundError("Freesurfer license could not be located")
 

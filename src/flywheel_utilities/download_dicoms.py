@@ -25,10 +25,14 @@ def dicom_unzip_name(name: str) -> str:
     """
     Construct name for unzipped DICOM series from label on Flywheel. Remove spaces and .zip.
 
-    Args:
-        name: filename
-    Returns:
-        clean_name: filename
+    Parameters
+    ----------
+    name:
+        filename
+
+    Returns
+    -------
+        clean file name
     """
 
     clean_name = name.replace(".dicom", "")
@@ -51,13 +55,20 @@ def download_specific_dicoms(
     container housing the DICOM series, then use SeriesNumber to find the correct DICOM in the
     Flywheel container.
 
-    Args:
-        subject: flywheel subject object
-        filenames: list of BIDsified file names
-        work_dir: path to working directory
-        is_dry_run: download results?
-    Returns:
-        orig_dicoms: path to unzipped DICOMs
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    filenames:
+        list of BIDsified file names
+    work_dir:
+        Path to working directory
+    is_dry_run:
+        download results?
+
+    Returns
+    -------
+        list of Paths to unzipped DICOMs
     """
 
     log.info("--------------------------------------------")
@@ -151,12 +162,18 @@ def download_all_dicoms(
     """
     Download all DICOM series for a subject with the option to filter using to_ignore.
 
-    Args:
-        subject: flywheel subject object
-        work_dir: path to working directory for download
-        to_ignore: list of strings used to reject DICOMS for download
-        dicom_dir: directory to extract DICOM series to
-        is_dry_run: download results?
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    work_dir:
+        Path to working directory for download
+    to_ignore:
+        list of strings used to reject DICOMS for download
+    dicom_dir:
+        directory to extract DICOM series to
+    is_dry_run:
+        download results?
     """
 
     log.info("--------------------------------------------")

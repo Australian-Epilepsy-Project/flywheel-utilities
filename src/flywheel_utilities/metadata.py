@@ -2,6 +2,8 @@
 Tag subjects with the gear and version number
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 
@@ -20,13 +22,16 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-def update_subject_tags(context: "GearToolkitContext", subject: "ContainerSubjectOutput") -> None:
+def update_subject_tags(context: GearToolkitContext, subject: ContainerSubjectOutput) -> None:
     """
     Update the subject's tag to indicate the gear has been run
 
-    Args:
-        context: gear context object
-        subject: flywheel subject object
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+    subject:
+        Flywheel subject object
     """
 
     gear_name: str = utils.get_gear_name(context)

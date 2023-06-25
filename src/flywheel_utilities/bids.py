@@ -1,6 +1,12 @@
 """
-BIDS related functions
+BIDS related functions.
+FUnctions for creating:
+- dummy dataset json file
+- BIDS directory
+- BIDS derivative directory
 """
+
+from __future__ import annotations
 
 import json
 import logging
@@ -23,8 +29,10 @@ def add_dataset_description(bids_dir: Path) -> None:
     """
     Create dummy dataset_description.json as well as README.md
 
-    Args:
-        bids_dir: path to bids directory
+    Parameters
+    ----------
+    bids_dir:
+        Path to BIDS directory
     """
 
     # Dummy dataset description
@@ -58,8 +66,8 @@ def add_dataset_description(bids_dir: Path) -> None:
 
 
 def create_bids_dir(
-    context: "GearToolkitContext",
-    subject: "ContainerSubjectOutput",
+    context: GearToolkitContext,
+    subject: ContainerSubjectOutput,
     modalities: List[str],
     add_description: bool = True,
 ) -> Path:
@@ -67,13 +75,22 @@ def create_bids_dir(
     Create BIDS directory, and a root level dummy dataset description if requested. The BIDS
     directory will maintain any session structure found on Flywheel.
 
-    Args:
-        context: gear context object
-        subject: flywheel subject object
-        modalities: list of modalities that need to be downloaded
-        add_description: add dummy dataset description
-    Return:
-        bids_dir: path to bids directory
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+    subject:
+        Flywheel subject object
+    modalities:
+        list of modalities that need to be downloaded
+    add_description:
+        add dummy dataset description?
+
+
+    Returns
+    -------
+    bids_dir:
+        Path to bids directory
     """
 
     log.info("Creating bids directory structure...")
@@ -98,22 +115,28 @@ def create_bids_dir(
 
 
 def create_deriv_dir(
-    context: "GearToolkitContext", sub_label: str, which_version: str = "first"
+    context: GearToolkitContext, sub_label: str, which_version: str = "first"
 ) -> Path:
     """
     Create output folder to store results. The folder name and version are retrieved from the
     manifest label and version. The folder structure follows the specification for BIDS
     derivatives (<pipeline>-v<version>).  E.g., /fMRIPrep-v21.0.0/sub-XXXXX/
 
-    Args:
-        context: gear context object
-        sub_label: subject label (XXXXXX)
-        which_version: if using X.X.X_Y.Y.Y versioning, which position is the version of the
-        underlying BIDS App. Specify single if only one version present, and specify none if no
-        version is to be include
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+    sub_label:
+        subject label (XXXXXX)
+    which_version:
+        if using X.X.X_Y.Y.Y versioning, which position is the version of the underlying BIDS App.
+        Specify single if only one version present, and specify none if no version is to be
+        include
 
     Returns
-        deriv_dir: path to derivatives folder
+    -------
+    deriv_dir:
+        Path to created derivatives directory
     """
 
     gear_name: str = utils.get_gear_name(context).replace(":", "-v")

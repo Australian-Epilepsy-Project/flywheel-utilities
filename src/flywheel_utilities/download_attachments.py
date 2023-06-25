@@ -2,6 +2,8 @@
 Download and unzip an attachment from the Flywheel project
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 from typing import TYPE_CHECKING
@@ -16,14 +18,18 @@ if TYPE_CHECKING:
 logger = logging.getLogger()
 
 
-def download_attachment(context: "GearToolkitContext", name: str, is_dry_run: bool) -> None:
+def download_attachment(context: GearToolkitContext, name: str, is_dry_run: bool) -> None:
     """
     Download an attachment from the project and unzip into the working directory
 
-    Args:
-        context: Flywheel context manager
-        name: name of attachment to be downloaded
-        is_dry_run: results will not be unzipped if dry run
+    Parameters
+    ----------
+    context:
+        Flywheel context manager
+    name:
+        name of attachment to be downloaded
+    is_dry_run:
+        results will not be unzipped if dry run
     """
 
     # Get the project

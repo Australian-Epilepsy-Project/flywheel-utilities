@@ -3,6 +3,8 @@ Setup basic logging with the log level determined from the Flywheel manifest
 variable 'gear-log-level'.
 """
 
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING
 
@@ -12,15 +14,21 @@ if TYPE_CHECKING:
 
 
 def setup_basic_logging(
-    context: "GearToolkitContext",
+    context: GearToolkitContext,
     log_format: str = "[%(asctime)s %(levelname)s] %(message)s",
     log_date: str = "%Y-%m-%d %H:%M:%S",
 ) -> None:
     """
-    Args:
-        context: context object
-        log_format: logging print format
-        log_date: logging date format
+    Basic formatting for logger
+
+    Parameters
+    ----------
+    context:
+        Flywheel context object
+    log_format:
+        desired logging print format
+    log_date:
+        desired logging date format
     """
 
     # Setup basic logging
