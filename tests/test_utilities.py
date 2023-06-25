@@ -4,7 +4,6 @@ Test for utils.py
 
 
 from flywheel_utilities import utils
-
 from tests.mock_classes import Context
 
 
@@ -26,7 +25,4 @@ def test_zip_save_name():
     label = "sub-101101"
     dest = "12321ab2345e8de8f"
 
-    assert (
-        utils.zip_save_name(base, label, dest)
-        == base + "_" + label + "_" + dest + ".zip"
-    )
+    assert utils.zip_save_name(base, label, dest) == base + "_" + label + "_" + dest + ".zip"

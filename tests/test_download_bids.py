@@ -121,8 +121,7 @@ def test_post_populate_pass(tmp_path, caplog):
         download_bids.post_populate_intended_for(dir_bids.parent, populate_with)
 
     assert caplog.messages[0] == (
-        "Post populating fmap IntendedFor fields with all files from: "
-        f"['{populate_with[0]}']"
+        "Post populating fmap IntendedFor fields with all files from: " f"['{populate_with[0]}']"
     )
 
     # Check fields have been filled
@@ -161,14 +160,13 @@ def test_post_populate_empty(tmp_path, caplog):
             with open(fmap_pa, "w", encoding="utf-8") as fmap_out:
                 json.dump({"dummy_dict_pa": 1, "some_key": "value"}, fmap_out, indent=2)
 
-    # Attmpt to populate with files from
+    # Attempt to populate with files from
     populate_with = ["func"]
     with caplog.at_level(logging.DEBUG):
         download_bids.post_populate_intended_for(dir_bids.parent, populate_with)
 
     assert caplog.messages[0] == (
-        "Post populating fmap IntendedFor fields with all files from: "
-        f"['{populate_with[0]}']"
+        "Post populating fmap IntendedFor fields with all files from: " f"['{populate_with[0]}']"
     )
     assert caplog.messages[1] == "Filtered IntendedFor field empty"
 
