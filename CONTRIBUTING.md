@@ -7,10 +7,24 @@ If you believe you've found a bug, please open a new Github Issue and provide as
 ## Code contributions
 
 Code contributions are very welcome. Code must not be committed directly to `main`.
-Instead, either for the repository or create a new branch based on `dev` and initiate a pull request onto `dev`.
+Instead, either fork the repository or create a new branch based from `dev` and initiate a pull request onto `dev`.
 
-Before committing your code, make sure `pre-commit` is installed (dev option).
-This will ensure the following linters/formatters are run over each commit.
+To ensure consistent coding conventions, make sure [pre-commit](https://pre-commit.com/) is installed.
+To install all `dev` dependencies (in editable mode for development), including `pre-commit`, use the following command:
+```
+  $ python3 -m pip install -e .[dev]
+```
+and then run
+```
+  $ pre-commit install
+```
+from the root of this repository.
+To test that you have installed everything correctly, run:
+```
+  $ pytest -vv
+```
+
+Now when committing code, `pre-commit` will ensure the following linters/formatters are run over each commit.
 - pylint
 - mypy
 - isort
