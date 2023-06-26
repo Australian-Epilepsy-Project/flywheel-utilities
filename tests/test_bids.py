@@ -33,7 +33,7 @@ def test_add_dataset_description(tmp_path):
 
 
 def test_create_deriv_dir(tmp_path):
-    """Test create_deriv_dir"""
+    """Test all variants of create_deriv_dir"""
 
     gear_name = "testing-gear"
     gear_version = "3.14.2_0.11.0"
@@ -52,3 +52,15 @@ def test_create_deriv_dir(tmp_path):
     bids.create_deriv_dir(context, label, "second")
 
     assert (tmp_path / (gear_name + "-v" + second_ver + "/sub-" + label)).exists() is True
+
+    # Use single version for dir creation
+    context.gear_version = "3.14.2"
+    bids.create_deriv_dir(context, label, "single")
+
+    assert (tmp_path / (gear_name + "-v" + context.gear_version + "/sub-" + label)).exists() is True
+
+    # Use "none" to find version
+    context.gear_version = "3.14.2"
+    bids.create_deriv_dir(context, label, "none")
+
+    assert (tmp_path / (gear_name + "-v" + context.gear_version + "/sub-" + label)).exists() is True
