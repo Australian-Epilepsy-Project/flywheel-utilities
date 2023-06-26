@@ -52,6 +52,74 @@ class Client:
         pass
 
 
+class MockSubject:
+    def __init__(self, has_tags=True, state_scans="valid"):
+        if has_tags:
+            self.tags = ["megre2swi:1.1.1", "dwi2adc"]
+        else:
+            self.tags = []
+        self.id = "1234567890"  # pylint: disable=invalid-name
+        self.label = "sub-101101"
+        self._sessions = [MockSession(1, state_scans)]
+
+    def sessions(self):
+        return self._sessions
+
+
+class MockSession:
+    def __init__(self, num_sess, state_scans):
+        self.label = f"ses-{num_sess}"
+        self._acquisitions = [MockAcq(1, state_scans)]
+
+    def acquisitions(self):
+        return self._acquisitions
+
+    def reload(self):
+        return self
+
+
+class MockAcq:
+    def __init__(self, label, state=0):
+        self.label = f"{label}"
+
+        self.files = [MockScan(state)]  # , MockScan(state="valid", is_dicom=True)]
+
+        print(self.files)
+
+    def reload(self):
+        return self
+
+
+class MockScan:
+    def __init__(
+        self,
+        state="valid",
+        foldername="anat",
+        ignore=False,
+        is_dicom=False,
+        err_message="",
+        ignore_missing=False,
+    ):
+        self.info = {"BIDS": {}}
+        if state == "valid":
+            self.info["BIDS"]["Filename"] = "file1"
+            if ignore_missing is False:
+                self.info["BIDS"]["ignore"] = ignore
+            self.info["BIDS"]["Path"] = "sub-101101/ses-01/anat"
+            if foldername is not None:
+                self.info["BIDS"]["Folder"] = foldername
+            if err_message is not None:
+                self.info["BIDS"]["error_message"] = err_message
+            self.type = "nifti"
+        if is_dicom is True:
+            self.info["BIDS"]["Folder"] = "sourcedata"
+            self.type = "DiCOM"
+            self.name = "Some -annoying _-_ DICOM_name.dicom.zip"
+
+    def download(self, save_path):
+        pass
+
+
 class MockParent:
     """Mock parent class"""
 
