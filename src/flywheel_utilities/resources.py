@@ -12,7 +12,9 @@ import psutil
 log = logging.getLogger(__name__)
 
 
-def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
+def determine_n_cpus(
+    n_cpus: Optional[int] = None, omp_threads: Optional[int] = None
+) -> Tuple[int, int]:
     """
     Provide the desired number of cpus and threads, and have maximum number allowed returned.
 
@@ -62,7 +64,7 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
     return n_cpus, omp_threads
 
 
-def determine_max_mem(mem_mb: Union[int, float]) -> float:
+def determine_max_mem(mem_mb: Optional[Union[int, float]] = None) -> float:
     """
     Provide the desired amount of memory and have the maximum allowed memory usage returned.
 
