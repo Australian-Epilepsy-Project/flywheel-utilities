@@ -16,7 +16,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
 ]
 dependencies = [
-  "flywheel==0.5.4",
+  "flywheel-sdk==16.8.16",
   "flywheel_gear_toolkit==0.6.10",
   "psutil==5.9.4",
 ]
