@@ -34,6 +34,11 @@ dev = [
     "codespell",
     "pre-commit",
 ]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+]
 
 [project.urls]
 Homepage = "https://github.com/Australian-Epilepsy-Project/flywheel-utilities"
@@ -68,3 +73,12 @@ line-length = 100
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest.ini_options]
+addopts = [
+    "-v",
+    "--cov=src/flywheel_utilities/",
+    "--cov-fail-under=70",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+]
