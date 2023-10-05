@@ -6,26 +6,30 @@ If you believe you've found a bug, please open a new Github Issue and provide as
 
 ## Code contributions
 
-Code contributions are very welcome. Code must not be committed directly to `main`. 
-Instead, create a new branch based on `main` and initiate a pull request.
+Code contributions are very welcome. Code must not be committed directly to `main`.
+Instead, either fork the repository or create a new branch based from `dev` and initiate a pull request onto `dev`.
 
-Before committing your code, check that it will pass the automated CI tests.
-To run the tests locally before committing,
-run the following commands from the root of this repository and ensure all tests pass:
+To ensure consistent coding conventions, make sure [pre-commit](https://pre-commit.com/) is installed.
+To install all `dev` dependencies (in editable mode for development), including `pre-commit`, use the following command:
 ```
-  $ pytest -v tests
-  $ ./check_formatting.sh
+  $ python3 -m pip install -e .[dev]
 ```
-The tests you will require packages listed in the `requirements_dev.txt` file.
+and then run
+```
+  $ pre-commit install
+```
+from the root of this repository.
+To test that you have installed everything correctly, run:
+```
+  $ pytest -vv
+```
 
-
-## Coding conventions
-
-To ensure consistency across the code base, this project uses the following linters and formatters:
+Now when committing code, `pre-commit` will ensure the following linters/formatters are run over each commit.
 - pylint
 - mypy
 - isort
 - black
+- codespell
 
 The only significant deviation from the default settings is the accepted line width which is set at 100.
 To see all arguments passed to the above linters/formatters, see the tool sections in the `pyproject.toml` file.

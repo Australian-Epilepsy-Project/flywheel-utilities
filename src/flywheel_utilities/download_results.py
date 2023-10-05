@@ -2,6 +2,8 @@
 Module for downloading data from flywheel
 """
 
+from __future__ import annotations
+
 import logging
 import sys
 from functools import reduce
@@ -11,7 +13,6 @@ from zipfile import ZipFile
 
 from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_analysis_output import ContainerAnalysisOutput
     from flywheel.models.container_subject_output import ContainerSubjectOutput
@@ -26,18 +27,28 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
     """
     Unzip the downloaded results. Attempts to find the zipped folder name first, however if there
     are not nested folders, the unzip name is determined by stripping the zipped names of
-    everything after and inlcuding "_sub-".  Only unzips the file if not already present.
+    everything after and including "_sub-".  Only unzips the file if not already present.
 
-    Args:
-        zip_name: full path to zip file
-        work_dir: path to work directory
-        is_dry_run: is this a dry run?
+    Parameters
+    ----------
+    zip_name:
+        Path to zip file
+    work_dir:
+        Path to work directory
+    is_dry_run:
+        is this a dry run?
+
+    Returns
+    -------
+        exit code
     """
 
     # Get list of all files in the zip file
     with ZipFile(zip_name, "r") as in_zip:
-        dirs = [info.filename for info in in_zip.infolist() if info.is_dir()]
-        files = [info.filename for info in in_zip.infolist() if not str(info).endswith("/")]
+        dirs: List[str] = [info.filename for info in in_zip.infolist() if info.is_dir()]
+        files: List[str] = [
+            info.filename for info in in_zip.infolist() if not str(info).endswith("/")
+        ]
 
     if len(dirs) == 0 and len(files) == 0:
         log.error("Zip file is empty!")
@@ -45,10 +56,10 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
 
     # Extract the base directory
     if len(dirs) != 0:
-        base_dir = Path(dirs[0]).parts[0]
+        base_dir: str = Path(dirs[0]).parts[0]
         log.debug(f"Base dir of zipped file: {base_dir}")
     else:
-        name = str(zip_name)
+        name: str = str(zip_name)
         base_dir = Path(name[: name.find("_sub-")]).parts[-1]
 
     # Check if file already exists
@@ -61,7 +72,7 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
 
 
 def download_previous_result(
-    subject: "ContainerSubjectOutput",
+    subject: ContainerSubjectOutput,
     results: Dict[str, str],
     work_dir: Path,
     export_gear: bool = False,
@@ -72,27 +83,37 @@ def download_previous_result(
     One can specify if searching for processing results or export results via export_gear.
     Results will be downloaded to 'work_dir'.
 
-    Args:
-        subject: flywheel subject object
-        results_info: dict containing gear_name, filename and tag.
-                    - gear_name: with or without version
-                    - filename: used as regex to match output file
-                    - tag: used for simple is <tag> in tag search of job tags.
-        work_dir: path to work directory
-        export_gear: should export runs be included?
-        is_dry_run: is this a dry run?
+    Parameters
+    ----------
+    subject:
+        Flywheel subject object
+    results_info:
+        dict containing gear_name, filename and tag.
+            - gear_name: with or without version
+            - filename: used as regex to match output file
+            - tag: used for simple is <tag> in tag search of job tags.
+    work_dir:
+        Path to work directory
+    export_gear:
+        should export runs be included?
+    is_dry_run:
+        is this a dry run?
+
+    Returns
+    -------
+        exit code
     """
 
-    gear_name = results["gear_name"]
-    filename = results["filename"]
-    tag = results["tag"]
+    gear_name: str = results["gear_name"]
+    filename: str = results["filename"]
+    tag: str = results["tag"]
 
     log.info(f"Attempting to find previous {gear_name} result")
 
-    analyses = subject.reload().analyses
+    analyses: List[ContainerAnalysisOutput] = subject.reload().analyses
 
     # Scan through subject's previous analyses and find all successful runs
-    def filter_completed(analysis: "ContainerAnalysisOutput") -> bool:
+    def filter_completed(analysis: ContainerAnalysisOutput) -> bool:
         if "gear-export" in analysis.job.config["config"]:
             if analysis.job.config["config"]["gear-export"] != export_gear:
                 return False
@@ -100,7 +121,7 @@ def download_previous_result(
 
     analyses = list(filter(filter_completed, analyses))
 
-    # Check we still have analysis ouputs
+    # Check we still have analysis outputs
     if len(analyses) == 0:
         log.error(f"No successful {gear_name} runs were found!")
         return 1
@@ -108,14 +129,14 @@ def download_previous_result(
     log.debug(f"Found {len(analyses)} successful gear runs")
 
     # Filter using tag
-    def filter_tag(analysis: "ContainerAnalysisOutput", tag: str) -> bool:
+    def filter_tag(analysis: ContainerAnalysisOutput, tag: str) -> bool:
         return bool(tag in analysis.job.tags)
 
     if tag != "":
         log.debug(f"Using the tag '{tag}' to further filter results")
         analyses = list(filter(lambda filt: filter_tag(filt, tag), analyses))
 
-    # Check we still have analysis ouputs
+    # Check we still have analysis outputs
     if len(analyses) == 0:
         log.error(f"No successful {gear_name} runs survived tag filtering!")
         return 1
@@ -128,11 +149,11 @@ def download_previous_result(
 
     # Select latest output
     def latest_date(
-        output1: "ContainerAnalysisOutput", output2: "ContainerAnalysisOutput"
-    ) -> "ContainerAnalysisOutput":
+        output1: ContainerAnalysisOutput, output2: ContainerAnalysisOutput
+    ) -> ContainerAnalysisOutput:
         return output1 if output1.created > output2.created else output2
 
-    latest_result = reduce(latest_date, analyses)
+    latest_result: ContainerAnalysisOutput = reduce(latest_date, analyses)
 
     log.info(f"Download results from {latest_result.gear_info['version']}")
     log.info(f"Job id for previous results: {latest_result.id}")
@@ -164,20 +185,25 @@ def download_previous_result(
 
 
 def download_specific_result(
-    analysis: "ContainerAnalysisOutput", filename: str, work_dir: Path, is_dry_run: bool
+    analysis: ContainerAnalysisOutput, filename: str, work_dir: Path, is_dry_run: bool
 ) -> None:
     """
     Download results using destination ID from previous gear run.
     Results will be downloaded into work_dir.
 
-    Args:
-        analysis:
-        filename: string used to find output file (substring matching)
-        work_dir: path to work directory
-        is_dry_run: is this a dry run?
+    Parameters
+    ----------
+    analysis:
+        analysis containing results to be downloaded
+    filename:
+        string used to find output file (substring matching)
+    work_dir:
+        Path to work directory
+    is_dry_run:
+        is this a dry run?
     """
 
-    log.info("Scanning analysis output files for an output " f"containing '{filename}'")
+    log.info("Scanning analysis output files for an output containing '{filename}'")
 
     files: List["FileEntry"] = analysis.files
 

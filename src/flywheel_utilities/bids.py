@@ -1,16 +1,21 @@
 """
-BIDS related functions
+BIDS related functions.
+FUnctions for creating:
+- dummy dataset json file
+- BIDS directory
+- BIDS derivative directory
 """
+
+from __future__ import annotations
 
 import json
 import logging
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from flywheel_utilities import utils
 
-# Enable explicit type hints with mypy
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import ContainerSubjectOutput
     from flywheel_geartoolkit_context import GearToolkitContext
@@ -23,12 +28,14 @@ def add_dataset_description(bids_dir: Path) -> None:
     """
     Create dummy dataset_description.json as well as README.md
 
-    Args:
-        bids_dir: path to bids directory
+    Parameters
+    ----------
+    bids_dir:
+        Path to BIDS directory
     """
 
     # Dummy dataset description
-    info = {
+    info: Dict[str, Any] = {
         "Acknowledgements": "",
         "Authors": ["dummy", "authors"],
         "BIDSVersion": "1.2.0",
@@ -41,17 +48,16 @@ def add_dataset_description(bids_dir: Path) -> None:
         "template": "project",
     }
 
-    description = bids_dir / "dataset_description.json"
+    description: Path = bids_dir / "dataset_description.json"
 
     if not description.is_file():
-
         with open(description, "w", encoding="utf-8") as data_description:
             json.dump(info, data_description, indent=4)
 
         log.info("Dummy dataset_description.json created in root bids directory")
 
     # Create dummy README
-    readme = bids_dir / "README"
+    readme: Path = bids_dir / "README"
 
     with open(readme, "w", encoding="utf-8") as read_me:
         # Write some dummy lines so BIDS doesn't complain that it is too short
@@ -59,8 +65,8 @@ def add_dataset_description(bids_dir: Path) -> None:
 
 
 def create_bids_dir(
-    context: "GearToolkitContext",
-    subject: "ContainerSubjectOutput",
+    context: GearToolkitContext,
+    subject: ContainerSubjectOutput,
     modalities: List[str],
     add_description: bool = True,
 ) -> Path:
@@ -68,19 +74,28 @@ def create_bids_dir(
     Create BIDS directory, and a root level dummy dataset description if requested. The BIDS
     directory will maintain any session structure found on Flywheel.
 
-    Args:
-        context: gear context object
-        subject: flywheel subject object
-        modalities: list of modalities that need to be downloaded
-        add_description: add dummy dataset description
-    Return:
-        bids_dir: path to bids directory
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+    subject:
+        Flywheel subject object
+    modalities:
+        list of modalities that need to be downloaded
+    add_description:
+        add dummy dataset description?
+
+
+    Returns
+    -------
+    bids_dir:
+        Path to bids directory
     """
 
     log.info("Creating bids directory structure...")
 
     # Determine number of sessions
-    num_sessions = len(subject.sessions())
+    num_sessions: int = len(subject.sessions())
     log.info(f"Subject contains {num_sessions} sessions")
 
     sub_path: Path = context.work_dir / "bids" / ("sub-" + subject.label)
@@ -99,22 +114,28 @@ def create_bids_dir(
 
 
 def create_deriv_dir(
-    context: "GearToolkitContext", sub_label: str, which_version: str = "first"
+    context: GearToolkitContext, sub_label: str, which_version: str = "first"
 ) -> Path:
     """
     Create output folder to store results. The folder name and version are retrieved from the
     manifest label and version. The folder structure follows the specification for BIDS
     derivatives (<pipeline>-v<version>).  E.g., /fMRIPrep-v21.0.0/sub-XXXXX/
 
-    Args:
-        context: gear context object
-        sub_label: subject label (XXXXXX)
-        which_version: if using X.X.X_Y.Y.Y versioning, which position is the version of the
-        underlying BIDS App. Specify single if only one version present, and specify none if no
-        version is to be include
+    Parameters
+    ----------
+    context:
+        Flywheel gear context object
+    sub_label:
+        subject label (XXXXXX)
+    which_version:
+        if using X.X.X_Y.Y.Y versioning, which position is the version of the underlying BIDS App.
+        Specify single if only one version present, and specify none if no version is to be
+        include
 
     Returns
-        deriv_dir: path to derivatives folder
+    -------
+    deriv_dir:
+        Path to created derivatives directory
     """
 
     gear_name: str = utils.get_gear_name(context).replace(":", "-v")
@@ -129,10 +150,10 @@ def create_deriv_dir(
         elif which_version == "single":
             search = r"([0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})"
 
-        result = re.search(search, gear_name)
+        result: Optional[re.Match[str]] = re.search(search, gear_name)
         assert result is not None, (
-            "Could not isolate Flywheel versioning in gear name when"
-            " trying to strip it for BIDs derivative directory"
+            "Could not isolate Flywheel versioning in gear name when "
+            "trying to strip it for BIDs derivative directory"
             f"Retrieved gear name: {gear_name}"
         )
 
