@@ -102,7 +102,7 @@ def download_specific_dicoms(
                         download = True
                         # Extract series number to use as unique identifier
                         try:
-                            series_number = scan.info.header.dicom["SeriesNumber"]
+                            series_number = scan.info["header"]["dicom"]["SeriesNumber"]
                         except KeyError:
                             series_number = scan.info["SeriesNumber"]
                         break
@@ -123,7 +123,7 @@ def download_specific_dicoms(
                 if scan.type.lower() == "dicom":
                     # Extract scan information which will be used to match with correct DICOM
                     try:
-                        series_number_dicom = scan.info.header.dicom["SeriesNumber"]
+                        series_number_dicom = scan.info["header"]["dicom"]["SeriesNumber"]
                     except KeyError:
                         series_number_dicom = scan.info["SeriesNumber"]
                     if series_number_dicom == series_number:
