@@ -34,6 +34,9 @@ dev = [
     "codespell",
     "pre-commit",
 ]
+test = [
+    "pytest"
+]
 
 [project.urls]
 Homepage = "https://github.com/Australian-Epilepsy-Project/flywheel-utilities"
