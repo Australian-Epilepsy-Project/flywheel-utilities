@@ -101,7 +101,10 @@ def download_specific_dicoms(
                     if re.search(name, filename):
                         download = True
                         # Extract series number to use as unique identifier
-                        series_number = scan.info["SeriesNumber"]
+                        try:
+                            series_number = scan.info["header"]["dicom"]["SeriesNumber"]
+                        except KeyError:
+                            series_number = scan.info["SeriesNumber"]
                         break
                 else:
                     continue
@@ -119,7 +122,11 @@ def download_specific_dicoms(
             for scan in acq.reload().files:
                 if scan.type.lower() == "dicom":
                     # Extract scan information which will be used to match with correct DICOM
-                    if scan.info["SeriesNumber"] == series_number:
+                    try:
+                        series_number_dicom = scan.info["header"]["dicom"]["SeriesNumber"]
+                    except KeyError:
+                        series_number_dicom = scan.info["SeriesNumber"]
+                    if series_number_dicom == series_number:
                         download_name = work_dir / scan.name
                         if not download_name.is_file():
                             scan.download(download_name)
