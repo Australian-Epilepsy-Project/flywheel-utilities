@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.0 (2023-10-06)
+
+Enhancement release, with changes to package structure
+
+### Enhancement
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/27: handle metadata on Flywheel for v2
+  onwards of dcm2niix
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/26: update packaging layout, add pre-commit, switch do numpy-doc style, add more type hints, update CONTRIBUTING
+
 ## 0.6.0 (2023-03-20)
 
 Enhancement release, with some minor bug fixes
