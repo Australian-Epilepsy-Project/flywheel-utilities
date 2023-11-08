@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 (2023-11-08)
+
+Minor enhancement release to handle unzipping of enhanced DICOMS.
+
+### Enhancement
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/29: handle both classic and enhanced DICOMS when unzipping.
+
 ## 0.7.0 (2023-10-06)
 
 Enhancement release, with changes to package structure
