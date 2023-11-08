@@ -44,6 +44,7 @@ def dicom_unzip_name(name: str) -> str:
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-nested-blocks
+# pylint: disable=too-many-statements
 def download_specific_dicoms(
     subject: ContainerSubjectOutput,
     filenames: List[str],
@@ -138,10 +139,12 @@ def download_specific_dicoms(
             if download_name.suffix == ".zip":
                 if not download_name.is_dir() and is_dry_run is False:
                     unzip_archive(download_name, unzip_name, is_dry_run)
-                    log.debug(f" -> {unzip_name}")
             else:
-                # Copy already unzipped file so it has standardised naming
-                shutil.copytree(download_name, unzip_name)
+                if download_name.is_dir():
+                    shutil.copytree(download_name, unzip_name)
+                else:
+                    shutil.move(str(download_name), unzip_name)
+            log.debug(f" -> {unzip_name}")
 
             orig_dicoms.append(unzip_name)
 
@@ -222,7 +225,9 @@ def download_all_dicoms(
                 if download_name.suffix == ".zip":
                     if not unzip_dir.exists() and is_dry_run is False:
                         unzip_archive(download_name, unzip_dir, is_dry_run)
-                        log.debug(f" -> {unzip_name}")
                 else:
-                    # Move already unzipped DICOM series to dicom_dir
-                    shutil.copytree(download_name, unzip_dir)
+                    if download_name.is_dir():
+                        shutil.copytree(download_name, unzip_dir)
+                    else:
+                        shutil.move(str(download_name), unzip_dir)
+                log.debug(f" -> {unzip_name}")
