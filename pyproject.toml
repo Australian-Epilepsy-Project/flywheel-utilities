@@ -17,7 +17,7 @@ classifiers = [
 ]
 dependencies = [
   "flywheel_gear_toolkit==0.6.13",
-  "flywheel-sdk==16.8.16",
+  "flywheel-sdk>=17.8.0",
   "psutil==5.9.4",
 ]
 dynamic = ["version"]
