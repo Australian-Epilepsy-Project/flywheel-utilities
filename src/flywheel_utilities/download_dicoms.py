@@ -134,7 +134,7 @@ def download_specific_dicoms(
                         if not is_zipped:
                             download_dir_enhanced = work_dir / scan_name.partition(".")[0]
                             log.debug(f"  creating: {download_dir_enhanced}")
-                            download_dir_enhanced.mkdir()
+                            download_dir_enhanced.mkdir(exist_ok=True)
                             download_name = download_dir_enhanced / scan_name
                         else:
                             download_name = work_dir / scan_name
@@ -233,11 +233,12 @@ def download_all_dicoms(
 
                 # Unzip the file
                 unzip_name: Path = dicom_dir / dicom_unzip_name(scan_name)
+                log.debug(f"  {unzip_name=}")
                 if is_zipped:
                     if not unzip_name.exists() and is_dry_run is False:
                         unzip_archive(download_name, unzip_name, is_dry_run)
                 else:
                     log.info(f"   moving to: {unzip_name}")
-                    unzip_name.mkdir()
-                    shutil.copytree(download_name, unzip_name / scan_name)
+                    unzip_name.mkdir(exist_ok=True)
+                    shutil.move(str(download_name), unzip_name / scan_name)
                 log.debug(f" -> {unzip_name}")
