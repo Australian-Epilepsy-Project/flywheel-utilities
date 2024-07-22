@@ -133,6 +133,7 @@ def download_specific_dicoms(
                         scan_name: str = scan.name.replace(" ", "_")
                         if is_enhanced:
                             download_dir_enhanced = work_dir / scan_name.partition(".")[0]
+                            log.debug(f"  creating: {download_dir_enhanced}")
                             download_dir_enhanced.mkdir()
                             download_name = download_dir_enhanced / scan_name
                         else:
@@ -233,6 +234,7 @@ def download_all_dicoms(
                     download_name: Path = work_dir / scan_name
                 else:
                     download_dir_enhanced = work_dir / scan_name.partition(".")[0]
+                    log.debug(f"  creating: {download_dir_enhanced}")
                     download_dir_enhanced.mkdir()
                     download_name = download_dir_enhanced / scan_name
 
@@ -250,7 +252,7 @@ def download_all_dicoms(
                 else:
                     log.info(f"   moving to: {unzip_name}")
                     if is_enhanced:
-                        shutil.copytree(download_name.parent, unzip_name)
+                        shutil.copytree(download_name.parent.parent, unzip_name)
                     else:
                         shutil.move(str(download_name), unzip_name)
                 log.debug(f" -> {unzip_name}")
