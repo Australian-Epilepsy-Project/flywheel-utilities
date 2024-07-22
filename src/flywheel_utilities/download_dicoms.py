@@ -130,12 +130,13 @@ def download_specific_dicoms(
 
                     if series_number_dicom == series_number:
                         is_enhanced: bool = utils.is_enhanced(scan)
+                        scan_name: str = scan.name.replace(" ", "_")
                         if is_enhanced:
-                            download_dir_enhanced = work_dir / scan.name
+                            download_dir_enhanced = (work_dir / scan_name).with_suffix("")
                             download_dir_enhanced.mkdir()
-                            download_name = download_dir_enhanced / scan.name
+                            download_name = download_dir_enhanced / scan_name
                         else:
-                            download_name = work_dir / scan.name
+                            download_name = work_dir / scan_name
                         if not download_name.is_file():
                             scan.download(download_name)
                         num_downloads += 1
@@ -143,7 +144,7 @@ def download_specific_dicoms(
 
             # If dealing with classic DICOMS, unzip the file
             if not is_enhanced:
-                unzip_name: Path = work_dir / dicom_unzip_name(scan.name)
+                unzip_name: Path = work_dir / dicom_unzip_name(scan_name)
                 if download_name.suffix == ".zip":
                     if not download_name.is_dir() and is_dry_run is False:
                         unzip_archive(download_name, unzip_name, is_dry_run)
@@ -222,13 +223,22 @@ def download_all_dicoms(
                     continue
 
                 log.info(f"Found: {scan.name}")
-                download_name: Path = work_dir / scan.name
+
+                is_enhanced: bool = utils.is_enhanced(scan)
+
+                scan_name: str = scan.name.replace(" ", "_")
+                if not is_enhanced:
+                    download_name: Path = work_dir / scan_name
+                else:
+                    download_dir_enhanced = (work_dir / scan_name).with_suffix("")
+                    download_dir_enhanced.mkdir()
+                    download_name = download_dir_enhanced / scan_name
 
                 if not download_name.exists():
                     log.debug("   downloading...")
                     scan.download(download_name)
 
-                unzip_name: str = dicom_unzip_name(scan.name)
+                unzip_name: str = dicom_unzip_name(scan_name)
 
                 # Unzip the file
                 unzip_dir: Path = dicom_dir / unzip_name
@@ -239,5 +249,5 @@ def download_all_dicoms(
                     if download_name.is_dir():
                         shutil.copytree(download_name, unzip_dir)
                     else:
-                        shutil.move(str(download_name), unzip_dir)
+                        shutil.move(str(download_name.parent), unzip_dir)
                 log.debug(f" -> {unzip_name}")
