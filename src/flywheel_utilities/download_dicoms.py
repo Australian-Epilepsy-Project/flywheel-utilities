@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, List
 
 from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
-from flywheel_utilities import download_bids
+from flywheel_utilities import download_bids, utils
 
 if TYPE_CHECKING:
     from flywheel.models.container_subject_output import ContainerSubjectOutput
@@ -127,26 +127,36 @@ def download_specific_dicoms(
                         series_number_dicom = scan.info["header"]["dicom"]["SeriesNumber"]
                     except KeyError:
                         series_number_dicom = scan.info["SeriesNumber"]
+
                     if series_number_dicom == series_number:
-                        download_name = work_dir / scan.name
+                        is_enhanced: bool = utils.is_enhanced(scan)
+                        if is_enhanced:
+                            download_dir_enhanced = work_dir / scan.name
+                            download_dir_enhanced.mkdir()
+                            download_name = download_dir_enhanced / scan.name
+                        else:
+                            download_name = work_dir / scan.name
                         if not download_name.is_file():
                             scan.download(download_name)
                         num_downloads += 1
                         break
 
-            # Unzip the file
-            unzip_name: Path = work_dir / dicom_unzip_name(scan.name)
-            if download_name.suffix == ".zip":
-                if not download_name.is_dir() and is_dry_run is False:
-                    unzip_archive(download_name, unzip_name, is_dry_run)
-            else:
-                if download_name.is_dir():
-                    shutil.copytree(download_name, unzip_name)
+            # If dealing with classic DICOMS, unzip the file
+            if not is_enhanced:
+                unzip_name: Path = work_dir / dicom_unzip_name(scan.name)
+                if download_name.suffix == ".zip":
+                    if not download_name.is_dir() and is_dry_run is False:
+                        unzip_archive(download_name, unzip_name, is_dry_run)
                 else:
-                    shutil.move(str(download_name), unzip_name)
-            log.debug(f" -> {unzip_name}")
+                    if download_name.is_dir():
+                        shutil.copytree(download_name, unzip_name)
+                    else:
+                        shutil.move(str(download_name), unzip_name)
+                log.debug(f" -> {unzip_name}")
 
-            orig_dicoms.append(unzip_name)
+                orig_dicoms.append(unzip_name)
+            else:
+                orig_dicoms.append(download_dir_enhanced)
 
             # Return early if requested DICOMs have already been found
             if num_downloads == num_files:
