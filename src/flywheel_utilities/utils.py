@@ -78,12 +78,16 @@ def is_enhanced(scan: FileOutput) -> bool:
 
     try:
         if scan.info["header"]["dicom"]["PulseSequenceName"]:
+            log.debug("Working with an enhanced DICOM")
             return True
     except KeyError:
         try:
             if scan.info["PulseSequenceName"]:
+                log.debug("Working with an enhanced DICOM")
                 return True
         except KeyError:
             pass
+
+    log.debug("Working with a classic DICOM")
 
     return False

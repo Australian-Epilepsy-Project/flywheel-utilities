@@ -142,6 +142,7 @@ def download_specific_dicoms(
                         num_downloads += 1
                         break
 
+            log.debug(f"  {download_name=}")
             # If dealing with classic DICOMS, unzip the file
             if not is_enhanced:
                 unzip_name: Path = work_dir / dicom_unzip_name(scan_name)
@@ -149,6 +150,7 @@ def download_specific_dicoms(
                     if not download_name.is_dir() and is_dry_run is False:
                         unzip_archive(download_name, unzip_name, is_dry_run)
                 else:
+                    log.info(f"   moving to: {unzip_name}")
                     if download_name.is_dir():
                         shutil.copytree(download_name, unzip_name)
                     else:
@@ -234,20 +236,21 @@ def download_all_dicoms(
                     download_dir_enhanced.mkdir()
                     download_name = download_dir_enhanced / scan_name
 
+                log.debug(f"  {download_name=}")
+
                 if not download_name.exists():
                     log.debug("   downloading...")
                     scan.download(download_name)
 
-                unzip_name: str = dicom_unzip_name(scan_name)
-
                 # Unzip the file
-                unzip_dir: Path = dicom_dir / unzip_name
+                unzip_name: Path = dicom_dir / dicom_unzip_name(scan_name)
                 if download_name.suffix == ".zip":
-                    if not unzip_dir.exists() and is_dry_run is False:
-                        unzip_archive(download_name, unzip_dir, is_dry_run)
+                    if not unzip_name.exists() and is_dry_run is False:
+                        unzip_archive(download_name, unzip_name, is_dry_run)
                 else:
-                    if download_name.is_dir() and not is_enhanced:
-                        shutil.copytree(download_name, unzip_dir)
+                    log.info(f"   moving to: {unzip_name}")
+                    if is_enhanced:
+                        shutil.copytree(download_name.parent, unzip_name)
                     else:
-                        shutil.move(str(download_name.parent), unzip_dir)
+                        shutil.move(str(download_name), unzip_name)
                 log.debug(f" -> {unzip_name}")
