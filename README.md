@@ -13,8 +13,8 @@ will search all of the subject's sessions to find the file. See Usage below for 
 ## Tested with
 
   * Python == 3.8.10
-  * flywheel_gear_toolkit == 0.6.8
-  * flywheel_sdk == 16.13.5
+  * flywheel-gear-toolkit == 0.6.18
+  * flywheel-sdk == 18.1.1
 
 ## Quick start
 
@@ -37,7 +37,7 @@ See [here](https://flywheel-io.gitlab.io/public/gear-toolkit/flywheel_gear_toolk
 
 ### Basic usage
 
-```
+```python
   from flywheel_utilities import fly_wrappers
   from flywheel_utilities import bids, download_bids
 
@@ -86,7 +86,7 @@ will scan the desired directories and add all NIfTI files found within to the In
 Search for successful gear runs from a particular gear and download the output based on the output file name.
 This example ignores gears if they were run at the export level.
 That is, produced a DICOM series rather than NIfTI files.
-```
+```python
   from flywheel_utilities import download_results
 
   # Create dict containing gear name, name of file to be downloaded and an
@@ -105,7 +105,7 @@ That is, produced a DICOM series rather than NIfTI files.
 
 Download a specific result using the destination ID of the analysis container.
 This example assumes 'results-dest-ID' is an option in the manifest.
-```
+```python
   from flywheel_utilities import download_results
 
   # Analysis container destination ID
@@ -123,7 +123,7 @@ This example assumes 'results-dest-ID' is an option in the manifest.
 ### Downloading DICOM series based on BIDS file names
 
 The following example shows how to use the BIDS file name of a NIfTI file to download the corresponding DICOM series.
-```
+```python
   from flywheel_utilities import download_dicoms
 
   # List of BIDS names to use for search
@@ -138,7 +138,7 @@ The following example shows how to use the BIDS file name of a NIfTI file to dow
 
 The following example shows how to download an attachment stored at the project level. The download will be placed in
 the working directory (defined in the context), and will be unzipped beforehand if needed.
-```
+```python
   from flywheel_utilities import download_attachments
 
   download_attachments.download_attachment(context, attachment_name, is_dry_run=False)
@@ -150,7 +150,7 @@ Install the Freesurfer license to $FREESURFER_HOME.
 This assumes the Freesurfer license information is stored at the project level in "Custom Information" as string with
 the key set to "FREESURFER_LICENSE" and the value set to the contents of `licence.txt`.
 
-```
+```python
 from flywheel_utilities import freesurfer
 
 freesurfer.install_freesurfer_license(context)
