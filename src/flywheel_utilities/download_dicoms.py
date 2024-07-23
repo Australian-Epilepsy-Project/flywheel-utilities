@@ -127,26 +127,33 @@ def download_specific_dicoms(
                         series_number_dicom = scan.info["header"]["dicom"]["SeriesNumber"]
                     except KeyError:
                         series_number_dicom = scan.info["SeriesNumber"]
+
                     if series_number_dicom == series_number:
-                        download_name = work_dir / scan.name
+                        is_zipped: bool = scan.name.lower().endswith(".zip")
+                        scan_name: str = scan.name.replace(" ", "_")
+                        if not is_zipped:
+                            download_dir_enhanced = work_dir / scan_name.partition(".")[0]
+                            log.debug(f"  creating: {download_dir_enhanced}")
+                            download_dir_enhanced.mkdir(exist_ok=True)
+                            download_name = download_dir_enhanced / scan_name
+                        else:
+                            download_name = work_dir / scan_name
                         if not download_name.is_file():
                             scan.download(download_name)
                         num_downloads += 1
                         break
 
-            # Unzip the file
-            unzip_name: Path = work_dir / dicom_unzip_name(scan.name)
-            if download_name.suffix == ".zip":
+            log.debug(f"  {download_name=}")
+            # If dealing with classic DICOMS, unzip the file
+            if is_zipped:
+                unzip_name: Path = work_dir / dicom_unzip_name(scan_name)
                 if not download_name.is_dir() and is_dry_run is False:
                     unzip_archive(download_name, unzip_name, is_dry_run)
-            else:
-                if download_name.is_dir():
-                    shutil.copytree(download_name, unzip_name)
-                else:
-                    shutil.move(str(download_name), unzip_name)
-            log.debug(f" -> {unzip_name}")
+                log.debug(f" -> {unzip_name}")
 
-            orig_dicoms.append(unzip_name)
+                orig_dicoms.append(unzip_name)
+            else:
+                orig_dicoms.append(download_dir_enhanced)
 
             # Return early if requested DICOMs have already been found
             if num_downloads == num_files:
@@ -212,22 +219,26 @@ def download_all_dicoms(
                     continue
 
                 log.info(f"Found: {scan.name}")
-                download_name: Path = work_dir / scan.name
+
+                is_zipped: bool = scan.name.lower().endswith(".zip")
+
+                scan_name: str = scan.name.replace(" ", "_")
+                download_name: Path = work_dir / scan_name
+
+                log.debug(f"  {download_name=}")
 
                 if not download_name.exists():
                     log.debug("   downloading...")
                     scan.download(download_name)
 
-                unzip_name: str = dicom_unzip_name(scan.name)
-
                 # Unzip the file
-                unzip_dir: Path = dicom_dir / unzip_name
-                if download_name.suffix == ".zip":
-                    if not unzip_dir.exists() and is_dry_run is False:
-                        unzip_archive(download_name, unzip_dir, is_dry_run)
+                unzip_name: Path = dicom_dir / dicom_unzip_name(scan_name)
+                log.debug(f"  {unzip_name=}")
+                if is_zipped:
+                    if not unzip_name.exists() and is_dry_run is False:
+                        unzip_archive(download_name, unzip_name, is_dry_run)
                 else:
-                    if download_name.is_dir():
-                        shutil.copytree(download_name, unzip_dir)
-                    else:
-                        shutil.move(str(download_name), unzip_dir)
+                    log.info(f"   moving to: {unzip_name}")
+                    unzip_name.mkdir(exist_ok=True)
+                    shutil.move(str(download_name), unzip_name / scan_name)
                 log.debug(f" -> {unzip_name}")
