@@ -129,7 +129,7 @@ def download_specific_dicoms(
                         series_number_dicom = scan.info["SeriesNumber"]
 
                     if series_number_dicom == series_number:
-                        is_zipped: bool = scan.name.endswith(".zip")
+                        is_zipped: bool = scan.name.lower().endswith(".zip")
                         scan_name: str = scan.name.replace(" ", "_")
                         if not is_zipped:
                             download_dir_enhanced = work_dir / scan_name.partition(".")[0]
@@ -145,7 +145,7 @@ def download_specific_dicoms(
 
             log.debug(f"  {download_name=}")
             # If dealing with classic DICOMS, unzip the file
-            if not is_zipped:
+            if is_zipped:
                 unzip_name: Path = work_dir / dicom_unzip_name(scan_name)
                 if not download_name.is_dir() and is_dry_run is False:
                     unzip_archive(download_name, unzip_name, is_dry_run)
@@ -220,7 +220,7 @@ def download_all_dicoms(
 
                 log.info(f"Found: {scan.name}")
 
-                is_zipped: bool = scan.name.endswith(".zip")
+                is_zipped: bool = scan.name.lower().endswith(".zip")
 
                 scan_name: str = scan.name.replace(" ", "_")
                 download_name: Path = work_dir / scan_name
