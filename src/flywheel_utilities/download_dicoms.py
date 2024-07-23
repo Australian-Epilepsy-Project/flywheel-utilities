@@ -8,7 +8,7 @@ import logging
 import re
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Dict, List
 
 from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
@@ -50,7 +50,7 @@ def download_specific_dicoms(
     filenames: List[str],
     work_dir: Path,
     is_dry_run: bool = False,
-) -> List[Path]:
+) -> Dict[str, Path]:
     """
     Download a zipped DICOM series. Use the BIDsified file names from the NIfTI file(s) to find the
     container housing the DICOM series, then use SeriesNumber to find the correct DICOM in the
@@ -69,7 +69,7 @@ def download_specific_dicoms(
 
     Returns
     -------
-        list of Paths to unzipped DICOMs
+        dict of BIDsified file names and corresponding Paths to unzipped DICOMs
     """
 
     log.info("--------------------------------------------")
@@ -79,7 +79,7 @@ def download_specific_dicoms(
     num_files: int = len(filenames)
     num_downloads: int = 0
 
-    orig_dicoms: List[Path] = []
+    orig_dicoms: Dict[str, Path] = {}
 
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
@@ -151,9 +151,9 @@ def download_specific_dicoms(
                     unzip_archive(download_name, unzip_name, is_dry_run)
                 log.debug(f" -> {unzip_name}")
 
-                orig_dicoms.append(unzip_name)
+                orig_dicoms[name] = unzip_name
             else:
-                orig_dicoms.append(download_dir_enhanced)
+                orig_dicoms[name] = download_dir_enhanced
 
             # Return early if requested DICOMs have already been found
             if num_downloads == num_files:

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (2024-07-23)
+
+Minor version release to improve `dicom_specific_dicoms` function.
+
+### Enhancement
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/33: `download_specific_dicoms()` now returns a dictionary containing as the key the regex used to find the DICOM series, and the value the corresponding Path to the downloaded DICOMS.
+
 ## 0.9.0 (2024-07-23)
 
 Minor version release bumping the `flywheel-sdk` version and including a fix to better handle and standardise unzipping of DICOMS.
