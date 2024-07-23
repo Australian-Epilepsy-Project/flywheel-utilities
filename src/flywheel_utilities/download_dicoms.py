@@ -151,9 +151,9 @@ def download_specific_dicoms(
                     unzip_archive(download_name, unzip_name, is_dry_run)
                 log.debug(f" -> {unzip_name}")
 
-                orig_dicoms["name"] = unzip_name
+                orig_dicoms[name] = unzip_name
             else:
-                orig_dicoms["name"] = download_dir_enhanced
+                orig_dicoms[name] = download_dir_enhanced
 
             # Return early if requested DICOMs have already been found
             if num_downloads == num_files:
