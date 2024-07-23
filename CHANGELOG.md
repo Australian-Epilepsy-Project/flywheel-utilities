@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.0 (2024-07-23)
+
+Minor version release bumping the `flywheel-sdk` version and including a fix to better handle and standardise unzipping of DICOMS.
+
+### Maintenance
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/commit/c062cce7ab01362939b2781ef05df6bff4a9cd3e: bump the `flywheel-sdk` version to => 18.1.1
+
+### Fixed
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/31: handle both classic and enhanced DICOMS the same when downloading (specific files or "all" DICOMS).
+
 ## 0.8.0 (2023-11-08)
 
 Minor enhancement release to handle unzipping of enhanced DICOMS.
