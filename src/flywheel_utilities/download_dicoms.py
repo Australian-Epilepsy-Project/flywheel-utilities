@@ -124,13 +124,17 @@ def download_specific_dicoms(
                 if scan.type.lower() == "dicom":
                     # Extract scan information which will be used to match with correct DICOM
                     try:
-                        series_number_dicom = scan.info["header"]["dicom"]["SeriesNumber"]
+                        series_number_dicom: str = scan.info["header"]["dicom"]["SeriesNumber"]
+                        series_desc_dicom: str = scan.info["header"]["dicom"]["SeriesDescription"]
                     except KeyError:
                         series_number_dicom = scan.info["SeriesNumber"]
+                        series_desc_dicom = scan.info["SeriesDescription"]
 
                     if series_number_dicom == series_number:
                         is_zipped: bool = scan.name.lower().endswith(".zip")
-                        scan_name: str = scan.name.replace(" ", "_")
+                        scan_name: str = (series_number_dicom + "_" + series_desc_dicom).replace(
+                            " ", "_"
+                        )
                         if not is_zipped:
                             download_dir_enhanced = work_dir / scan_name.partition(".")[0]
                             log.debug(f"  creating: {download_dir_enhanced}")
