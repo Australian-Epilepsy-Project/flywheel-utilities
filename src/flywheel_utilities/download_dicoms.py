@@ -136,12 +136,12 @@ def download_specific_dicoms(
                             str(series_number_dicom) + "_" + series_desc_dicom
                         ).replace(" ", "_")
                         if not is_zipped:
-                            download_dir_enhanced = work_dir / scan_name.partition(".")[0]
+                            download_dir_enhanced = work_dir / scan_name
                             log.debug(f"  creating: {download_dir_enhanced}")
                             download_dir_enhanced.mkdir(exist_ok=True)
-                            download_name = download_dir_enhanced / scan_name
+                            download_name = download_dir_enhanced / scan.name
                         else:
-                            download_name = work_dir / scan_name
+                            download_name = work_dir / scan.name
                         if not download_name.is_file():
                             scan.download(download_name)
                         num_downloads += 1
