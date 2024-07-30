@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.1 (2024-07-30)
+
+Bug fix release to fix scenario where `dicom_specific_dicoms` would place enhanced DICOMS in the same output folder.
+
+### Fix
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/35: `download_specific_dicoms()` now handles enhanced DICOM filenames containing '.'. Previously this could cause all enhanced DICOMS to be moved into the same folder.
+
 ## 0.10.0 (2024-07-23)
 
 Minor version release to improve `dicom_specific_dicoms` function.
