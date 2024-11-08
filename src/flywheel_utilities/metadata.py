@@ -5,7 +5,6 @@ Tag subjects with the gear and version number
 from __future__ import annotations
 
 import logging
-import sys
 from typing import TYPE_CHECKING
 
 import flywheel
@@ -37,8 +36,7 @@ def update_subject_tags(context: GearToolkitContext, subject: ContainerSubjectOu
     if gear_name not in subject.tags:
         try:
             context.client.add_subject_tag(subject.id, gear_name)
-        except flywheel.rest.ApiException as err:  # pylint: disable=maybe-no-member
-            log.error(f"{err}")
-            sys.exit(1)
+        except flywheel.rest.ApiException:  # pylint: disable=maybe-no-member
+            log.info(f"Subject's already has tag: '{gear_name}'")
 
         log.info(f"Subject's tags now include '{gear_name}'")
