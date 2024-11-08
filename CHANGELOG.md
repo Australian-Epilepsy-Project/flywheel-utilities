@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.1 (2024-11-08)
+
+Hotfix to lower the required python version restriction as many gears still only using python 3.8.
+
+### Maintenance
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/42: Reduce python version restriction back down to 3.8
+
 ## 0.11.0 (2024-11-08)
 
 Minor version increase. Required python version now 3.10. Includes bug fix release so that metadata.py no longer raises error if subject already has tag name from a specific gear.
