@@ -1,5 +1,10 @@
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 # flywheel-utilites
+
+[![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 ## What is flywheel-utilities?
 
@@ -9,12 +14,6 @@ many of the modules (e.g., `bids.py`, `download_X.py`) were designed to help ana
 including cases where the subject may have had what should be considered a single session split into multiple sessions.
 For example, when searching for a subject's T1-weighted image, the function `download_specific_bids`,
 will search all of the subject's sessions to find the file. See Usage below for examples.
-
-## Tested with
-
-  * Python == 3.8.10
-  * flywheel-gear-toolkit == 0.6.18
-  * flywheel-sdk == 18.1.1
 
 ## Quick start
 

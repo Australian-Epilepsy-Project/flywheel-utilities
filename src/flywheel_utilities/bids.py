@@ -12,7 +12,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from flywheel_utilities import utils
 
@@ -35,7 +35,7 @@ def add_dataset_description(bids_dir: Path) -> None:
     """
 
     # Dummy dataset description
-    info: Dict[str, Any] = {
+    info: dict[str, Any] = {
         "Acknowledgements": "",
         "Authors": ["dummy", "authors"],
         "BIDSVersion": "1.2.0",
@@ -67,7 +67,7 @@ def add_dataset_description(bids_dir: Path) -> None:
 def create_bids_dir(
     context: GearToolkitContext,
     subject: ContainerSubjectOutput,
-    modalities: List[str],
+    modalities: list[str],
     add_description: bool = True,
 ) -> Path:
     """
@@ -150,7 +150,7 @@ def create_deriv_dir(
         elif which_version == "single":
             search = r"([0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})"
 
-        result: Optional[re.Match[str]] = re.search(search, gear_name)
+        result: re.Match[str] | None = re.search(search, gear_name)
         assert result is not None, (
             "Could not isolate Flywheel versioning in gear name when "
             "trying to strip it for BIDs derivative directory"

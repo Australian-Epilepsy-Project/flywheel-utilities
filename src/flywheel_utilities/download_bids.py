@@ -8,7 +8,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from flywheel.models.container_acquisition_output import ContainerAcquisitionOutput
@@ -36,7 +36,7 @@ def populate_intended_for(fw_file: FileEntry, sidecar: Path) -> None:
     log.debug(f"Populating IntendedFor of: {sidecar}")
 
     # Retrieve IntendedFor information from metadata
-    intended_for_orig: List[str] = fw_file["info"]["IntendedFor"]
+    intended_for_orig: list[str] = fw_file["info"]["IntendedFor"]
 
     if not intended_for_orig:
         log.warning("Original IntendedFor field in metadata empty")
@@ -62,7 +62,7 @@ def populate_intended_for(fw_file: FileEntry, sidecar: Path) -> None:
         json.dump(json_decoded, out_json, sort_keys=True, indent=2)
 
 
-def post_populate_intended_for(dir_sub: Path, post_populate: List[str]) -> None:
+def post_populate_intended_for(dir_sub: Path, post_populate: list[str]) -> None:
     """
     The json sidecars stored on Flywheel do not have the IntendedFor field populated.
     Instead, this information is found in the metadata. By default the IntendedFor fields with be
@@ -80,14 +80,14 @@ def post_populate_intended_for(dir_sub: Path, post_populate: List[str]) -> None:
     """
 
     log.info(f"Post populating fmap IntendedFor fields with all files from: {post_populate}")
-    sessions: List[Path] = list(dir_sub.glob("ses-*"))
+    sessions: list[Path] = list(dir_sub.glob("ses-*"))
     if not sessions:
         sessions = [dir_sub]
 
     for sesh in sessions:
-        intended_for: List[str] = []
+        intended_for: list[str] = []
         # Get dir containing all modalities (could be session or subject)
-        dirs: List[Path] = [x for x in sesh.glob("*") if x.is_dir() and "fmap" not in x.name]
+        dirs: list[Path] = [x for x in sesh.glob("*") if x.is_dir() and "fmap" not in x.name]
         for one_dir in dirs:
             if one_dir.name in post_populate:
                 for one_file in one_dir.glob("*.nii*"):
@@ -162,10 +162,10 @@ def is_bidsified(scan: FileEntry, acq: ContainerAcquisitionOutput) -> bool:
 
 def download_bids_modalities(
     subject: ContainerSubjectOutput,
-    modalities: List[str],
+    modalities: list[str],
     bids_dir: Path,
     is_dry_run: bool,
-    post_populate: Optional[List[str]] = None,
+    post_populate: list[str] | None = None,
 ) -> None:
     """
     Download required files by looping through all sessions, acquisitions and analyses to find
@@ -239,7 +239,7 @@ def download_bids_modalities(
 
 def download_bids_files(
     subject: ContainerSubjectOutput,
-    filenames: List[str],
+    filenames: list[str],
     bids_dir: Path,
     is_dry_run: bool,
 ) -> None:
