@@ -8,7 +8,7 @@ import logging
 import re
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 
 from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
 
@@ -47,10 +47,10 @@ def dicom_unzip_name(name: str) -> str:
 # pylint: disable=too-many-statements
 def download_specific_dicoms(
     subject: ContainerSubjectOutput,
-    filenames: List[str],
+    filenames: list[str],
     work_dir: Path,
     is_dry_run: bool = False,
-) -> Dict[str, Path]:
+) -> dict[str, Path]:
     """
     Download a zipped DICOM series. Use the BIDsified file names from the NIfTI file(s) to find the
     container housing the DICOM series, then use SeriesNumber to find the correct DICOM in the
@@ -79,7 +79,7 @@ def download_specific_dicoms(
     num_files: int = len(filenames)
     num_downloads: int = 0
 
-    orig_dicoms: Dict[str, Path] = {}
+    orig_dicoms: dict[str, Path] = {}
 
     for session in subject.sessions.iter():
         for acq in session.reload().acquisitions.iter():
@@ -176,7 +176,7 @@ def download_specific_dicoms(
 def download_all_dicoms(
     subject: ContainerSubjectOutput,
     work_dir: Path,
-    to_ignore: List[str],
+    to_ignore: list[str],
     dicom_dir: Path,
     is_dry_run: bool,
 ) -> None:

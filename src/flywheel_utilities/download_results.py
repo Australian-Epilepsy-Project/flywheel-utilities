@@ -8,7 +8,7 @@ import logging
 import sys
 from functools import reduce
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING
 from zipfile import ZipFile
 
 from flywheel_gear_toolkit.utils.zip_tools import unzip_archive
@@ -45,8 +45,8 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
 
     # Get list of all files in the zip file
     with ZipFile(zip_name, "r") as in_zip:
-        dirs: List[str] = [info.filename for info in in_zip.infolist() if info.is_dir()]
-        files: List[str] = [
+        dirs: list[str] = [info.filename for info in in_zip.infolist() if info.is_dir()]
+        files: list[str] = [
             info.filename for info in in_zip.infolist() if not str(info).endswith("/")
         ]
 
@@ -73,7 +73,7 @@ def unzip_result(zip_name: Path, work_dir: Path, is_dry_run: bool) -> int:
 
 def download_previous_result(
     subject: ContainerSubjectOutput,
-    results: Dict[str, str],
+    results: dict[str, str],
     work_dir: Path,
     export_gear: bool = False,
     is_dry_run: bool = False,
@@ -110,7 +110,7 @@ def download_previous_result(
 
     log.info(f"Attempting to find previous {gear_name} result")
 
-    analyses: List[ContainerAnalysisOutput] = subject.reload().analyses
+    analyses: list[ContainerAnalysisOutput] = subject.reload().analyses
 
     # Scan through subject's previous analyses and find all successful runs
     def filter_completed(analysis: ContainerAnalysisOutput) -> bool:
@@ -141,7 +141,7 @@ def download_previous_result(
         log.error(f"No successful {gear_name} runs survived tag filtering!")
         return 1
 
-    # List potential outputs
+    # list potential outputs
     log.debug(f"The following {gear_name} outputs were found:")
     for i in analyses:
         log.debug(f"-version : {i.gear_info['version']}")
@@ -205,7 +205,7 @@ def download_specific_result(
 
     log.info("Scanning analysis output files for an output containing '{filename}'")
 
-    files: List["FileEntry"] = analysis.files
+    files: list["FileEntry"] = analysis.files
 
     if len(files) == 0:
         log.error("Analysis has no output files")

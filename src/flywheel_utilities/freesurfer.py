@@ -7,7 +7,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import flywheel
@@ -29,7 +29,7 @@ def install_freesurfer_license(context: GearToolkitContext) -> None:
     """
 
     # Install path for license (at $FREESURFER_HOME)
-    free_home: Optional[str] = os.getenv("FREESURFER_HOME")
+    free_home: str | None = os.getenv("FREESURFER_HOME")
     assert (
         free_home is not None
     ), "Must set $FREESURFER_HOME before calling install_freesurfer_license()"
