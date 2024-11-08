@@ -5,14 +5,13 @@ Determine and set computing resources.
 import logging
 import os
 from math import floor
-from typing import Optional, Tuple, Union
 
 import psutil
 
 log = logging.getLogger(__name__)
 
 
-def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
+def determine_n_cpus(n_cpus: int, omp_threads: int) -> tuple[int, int]:
     """
     Provide the desired number of cpus and threads, and have maximum number allowed returned.
 
@@ -31,7 +30,7 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
         allocated number of threads per process
     """
 
-    avail_cpus: Optional[int] = os.cpu_count()
+    avail_cpus: int | None = os.cpu_count()
     assert avail_cpus is not None, "Could not determine available CPUs"
 
     log.info(f"Available CPUs: {avail_cpus}")
@@ -62,7 +61,7 @@ def determine_n_cpus(n_cpus: int, omp_threads: int) -> Tuple[int, int]:
     return n_cpus, omp_threads
 
 
-def determine_max_mem(mem_mb: Union[int, float]) -> float:
+def determine_max_mem(mem_mb: int | float) -> float:
     """
     Provide the desired amount of memory and have the maximum allowed memory usage returned.
 
