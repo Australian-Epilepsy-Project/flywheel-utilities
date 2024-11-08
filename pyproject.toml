@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "flywheel_utilities"
 description = "Package to make interfacing with Flywheel.io simpler. Especially geared towards subject-based analyses"
 readme = "README.md"
-requires-python = ">3.8"
+requires-python = ">=3.10"
 authors = [{ name = "Aaron Capon", email = "aaron.capon@florey.edu.au" }]
 maintainers = [{ name = "Aaron Capon", email = "aaron.capon@florey.edu.au" }]
 license = { file = "COPYING" }
@@ -16,9 +16,9 @@ classifiers = [
     "Intended Audience :: Science/Research",
 ]
 dependencies = [
-  "flywheel_gear_toolkit",
-  "flywheel-sdk>=18.1.1",
-  "psutil",
+    "flywheel_gear_toolkit",
+    "flywheel-sdk~=19.3.0",
+    "psutil",
 ]
 dynamic = ["version"]
 
