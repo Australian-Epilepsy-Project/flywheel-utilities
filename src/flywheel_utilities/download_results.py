@@ -5,6 +5,7 @@ Module for downloading data from flywheel
 from __future__ import annotations
 
 import logging
+import re
 import sys
 from functools import reduce
 from pathlib import Path
@@ -161,13 +162,15 @@ def download_previous_result(
     # Search saved outputs for file and download to work_dir
     for output in latest_result.files:
         log.debug(f"Found: {output.name}")
-        if filename in output.name:
-            log.info(f"Found: {output.name}")
-            download_name = work_dir / output.name
-            if not download_name.is_file():
-                log.info(f"Downloading: {download_name.name}")
-                output.download(download_name)
-                break
+        if not re.search(filename, output.name):
+            continue
+
+        log.info(f"Found: {output.name}")
+        download_name = work_dir / output.name
+        if not download_name.is_file():
+            log.info(f"Downloading: {download_name.name}")
+            output.download(download_name)
+            break
 
     # Check file was downloaded
     try:
@@ -196,7 +199,7 @@ def download_specific_result(
     analysis:
         analysis containing results to be downloaded
     filename:
-        string used to find output file (substring matching)
+        regex used to find output file
     work_dir:
         Path to work directory
     is_dry_run:
@@ -213,15 +216,16 @@ def download_specific_result(
 
     for output in files:
         log.debug(f"Found: {output.name}")
-        if filename in output.name:
-            log.info(f"Found: {output.name}")
-            download_name = work_dir / output.name
-            if not download_name.is_file():
-                log.info(f"Downloading: {download_name.name}")
-                output.download(download_name)
-            else:
-                log.debug("Zip file already exists. Must be testing")
-            break
+        if not re.search(filename, output.name):
+            continue
+        log.info(f"Found: {output.name}")
+        download_name = work_dir / output.name
+        if not download_name.is_file():
+            log.info(f"Downloading: {download_name.name}")
+            output.download(download_name)
+        else:
+            log.debug("Zip file already exists. Must be testing")
+        break
 
     # Check file was downloaded
     try:
