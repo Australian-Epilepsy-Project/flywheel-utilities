@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0 (2025-02-27)
+
+Use re.search() to find correct files to download from another gear (download_results.py)
+
+### Maintenance
+
+- https://github.com/Australian-Epilepsy-Project/flywheel-utilities/pull/44
+
 ## 0.11.1 (2024-11-08)
 
 Hotfix to lower the required python version restriction as many gears still only using python 3.8.
