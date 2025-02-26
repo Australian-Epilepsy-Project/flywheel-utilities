@@ -5,6 +5,7 @@ Download and unzip an attachment from the Flywheel project
 from __future__ import annotations
 
 import logging
+import re
 import sys
 from typing import TYPE_CHECKING
 
@@ -37,13 +38,15 @@ def download_attachment(context: GearToolkitContext, name: str, is_dry_run: bool
 
     # Search attachments for requested file
     for attach in proj.files:
-        if name in attach.name:
-            logger.info(f"Located: {attach.name}")
-            if not (context.work_dir / attach.name).is_file():
-                attach.download(context.work_dir / attach.name)
-            else:
-                logger.debug("File already downloaded. Must be testing")
-            break
+        if not re.search(name, attach.name):
+            continue
+
+        logger.info(f"Located: {attach.name}")
+        if not (context.work_dir / attach.name).is_file():
+            attach.download(context.work_dir / attach.name)
+        else:
+            logger.debug("File already downloaded. Must be testing")
+        break
     else:
         logger.error(f"Could not locate file using search term: {name}")
         sys.exit(1)
